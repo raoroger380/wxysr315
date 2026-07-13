@@ -1,0 +1,1678 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>伍希彦 · 生日祝福</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #ece6e0;
+            --glass: rgba(255, 255, 255, 0.5);
+            --glass-border: rgba(59, 130, 246, 0.12);
+            --glass-hover: rgba(59, 130, 246, 0.06);
+            --accent: #3b82f6;
+            --accent-soft: rgba(59, 130, 246, 0.08);
+            --accent-glow: rgba(59, 130, 246, 0.1);
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-lg: 24px;
+        }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+        body {
+            font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            overflow-x: hidden;
+            background:
+                radial-gradient(ellipse at 50% 30%, rgba(59, 130, 246, 0.03) 0%, transparent 60%);
+        }
+        .confetti-container {
+            position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden;
+        }
+        .confetti-piece {
+            position: absolute;
+            width: 8px; height: 8px;
+            opacity: 0.6;
+            animation: confetti-fall linear infinite;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0.6; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0.1; }
+        }
+
+        #bg, #textFx {
+            position: fixed; inset: 0; width: 100vw; height: 100vh; display: block;
+        }
+        #bg { z-index: 0; }
+        #textFx { z-index: 2; pointer-events: none; }
+        .screen {
+            min-height: 100vh;
+            position: relative;
+            z-index: 3;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+        }
+        .hidden { display: none !important; }
+
+        #cakeScreen {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 30px 20px;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .cake-stage {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .cake-layer {
+            border-radius: 12px;
+            box-shadow: inset 0 2px 10px rgba(255,255,255,0.5), 0 6px 20px rgba(0,0,0,0.06);
+            position: relative;
+            margin-top: -2px;
+            opacity: 0;
+            animation-fill-mode: forwards;
+            transform-origin: center bottom;
+        }
+        .cake-layer.show { opacity: 1; }
+        .layer1 { width: 180px; height: 50px; background: #f5e6d3; z-index: 3; }
+        .layer2 { width: 210px; height: 45px; background: #eddcc8; z-index: 2; }
+        .layer3 { width: 240px; height: 40px; background: #e8d4be; z-index: 1; }
+        .drip-cream {
+            position: absolute;
+            top: -20px; left: 50%; transform: translateX(-50%);
+            width: 180px; height: 30px;
+            background: rgba(255, 248, 240, 0.92);
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            z-index: 10; opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .drip-cream.show { opacity: 1; top: -10px; animation: creamOoze 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        @keyframes creamOoze {
+            0% { transform: translateX(-50%) scaleX(0.4) scaleY(0.2); opacity: 0; border-radius: 50%; }
+            50% { transform: translateX(-50%) scaleX(1.08) scaleY(0.9); opacity: 1; border-radius: 50%; }
+            100% { transform: translateX(-50%) scaleX(1) scaleY(1); opacity: 1; border-radius: 50%; }
+        }
+        .drip-cream::after {
+            content: ""; position: absolute; bottom: -8px; left: 15px;
+            width: 14px; height: 14px; background: rgba(255, 248, 240, 0.92);
+            border-radius: 0 0 8px 8px; box-shadow: 0 3px 5px rgba(0,0,0,0.04);
+        }
+        .drip-cream::before {
+            content: ""; position: absolute; bottom: -12px; right: 20px;
+            width: 10px; height: 12px; background: rgba(255, 248, 240, 0.92);
+            border-radius: 0 0 6px 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+        .candle {
+            width: 14px; height: 36px;
+            background: linear-gradient(180deg, #fff 0%, #f5e6d3 80%);
+            border-radius: 10px;
+            position: absolute; top: -44px; left: 50%; margin-left: -7px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            z-index: 12; opacity: 0;
+            transition: all 0.5s ease;
+        }
+        .candle.show { opacity: 1; top: -48px; }
+        .flame {
+            position: absolute; left: 50%; top: -18px;
+            width: 14px; height: 18px; margin-left: -7px;
+            border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%;
+            background: radial-gradient(circle at 50% 40%, #fff8af, #f5c840 50%, #d08020 80%);
+            animation: flicker 800ms ease-in-out infinite alternate;
+            box-shadow: 0 0 16px rgba(245, 200, 64, 0.6);
+            transition: opacity 0.4s;
+        }
+        .flame.off { opacity: 0; animation: none; }
+        .flame.wobble {
+            animation: flameWobble 0.12s ease-in-out infinite !important;
+        }
+        @keyframes flameWobble {
+            0% { transform: translateX(0) scale(1) rotate(0deg); }
+            20% { transform: translateX(-3px) scale(0.75, 1.35) rotate(-4deg); }
+            40% { transform: translateX(2.5px) scale(1.15, 0.65) rotate(3deg); }
+            60% { transform: translateX(-2px) scale(0.8, 1.2) rotate(-3deg); }
+            80% { transform: translateX(1.5px) scale(1.05, 0.85) rotate(2deg); }
+            100% { transform: translateX(0) scale(1) rotate(0deg); }
+        }
+        .happy-birthday-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(2.8rem, 8vw, 5rem);
+            color: var(--accent);
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.3), 0 0 40px rgba(59, 130, 246, 0.1);
+            text-align: center; line-height: 1.2;
+            opacity: 0; transform: translateY(20px);
+            transition: all 0.8s ease;
+            position: absolute;
+            left: 50%; transform: translateX(-50%);
+        }
+        .happy-birthday-text.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        #micBtn {
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 14px 36px;
+            font-weight: 500;
+            color: var(--text);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 2px;
+            position: absolute;
+            font-family: inherit;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #micBtn:hover {
+            background: rgba(59, 130, 246, 0.06);
+            border-color: rgba(59, 130, 246, 0.25);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        #blowMeter {
+            width: 200px; height: 6px; border-radius: 10px;
+            background: rgba(59, 130, 246, 0.06);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            overflow: hidden;
+            position: absolute;
+        }
+        #blowMeter i {
+            display: block; height: 100%; width: 0%;
+            background: linear-gradient(90deg, var(--accent), #60a5fa);
+            border-radius: 10px;
+            transition: width 90ms linear;
+        }
+
+        .hint {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(59, 130, 246, 0.08);
+            border-radius: 12px;
+            padding: 6px 18px;
+            letter-spacing: 0.5px;
+        }
+        .skip-hint {
+            color: var(--accent) !important;
+            font-size: 1rem !important;
+            font-weight: 500 !important;
+            background: rgba(255,255,255,0.6) !important;
+            border-color: rgba(59,130,246,0.25) !important;
+            cursor: pointer !important;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            transition: all 0.3s ease;
+        }
+        .skip-hint:hover {
+            background: rgba(255,255,255,0.8) !important;
+            box-shadow: 0 0 20px rgba(59,130,246,0.15);
+        }
+
+        @keyframes dropSplat {
+            0% { transform: translateY(-380px) scaleX(1) scaleY(1); opacity: 0; }
+            48% { transform: translateY(3px) scaleX(0.96) scaleY(1.12); opacity: 1; }
+            60% { transform: translateY(0) scaleX(1.24) scaleY(0.65); }
+            74% { transform: translateY(0) scaleX(0.97) scaleY(1.08); }
+            88% { transform: translateY(0) scaleX(1.02) scaleY(0.96); }
+            100% { transform: translateY(0) scaleX(1) scaleY(1); opacity: 1; }
+        }
+        .splat-in { animation: dropSplat 0.7s cubic-bezier(0.22, 0.9, 0.35, 1.15) forwards; }
+
+        @keyframes flicker {
+            0% { transform: translateY(0) scale(1) rotate(0deg); }
+            20% { transform: translateY(-2.5px) scale(1.08, 1.12) rotate(-1deg); }
+            40% { transform: translateY(0.5px) scale(0.9, 0.85) rotate(0.5deg); }
+            60% { transform: translateY(-1.5px) scale(1.05, 1.08) rotate(-0.8deg); }
+            80% { transform: translateY(0) scale(0.95, 0.92) rotate(0.3deg); }
+            100% { transform: translateY(-1px) scale(1.02, 1.05) rotate(0deg); }
+        }
+        .flame-glow {
+            position: absolute;
+            left: -10px; top: -10px;
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(245,200,64,0.25) 0%, transparent 70%);
+            animation: glowPulse 1.2s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+        @keyframes glowPulse {
+            0% { transform: scale(0.7); opacity: 0.3; }
+            100% { transform: scale(1.4); opacity: 0.7; }
+        }
+
+        .bless-wrap {
+            position: relative;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(59, 130, 246, 0.12);
+            box-shadow: 0 20px 60px rgba(59, 130, 246, 0.06), 0 0 30px var(--accent-glow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            overflow: hidden;
+            width: 100px; height: 100px; border-radius: 50%;
+            transition: all 0.6s cubic-bezier(0.2, 0.9, 0.3, 1);
+        }
+        .bless-wrap.expanded {
+            width: min(90%, 700px);
+            height: auto;
+            min-height: 300px;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+        .bless-content {
+            opacity: 0;
+            transition: opacity 0.4s;
+            text-align: center;
+            width: 100%;
+        }
+        .bless-wrap.expanded .bless-content {
+            opacity: 1;
+            transition-delay: 0.4s;
+        }
+        .bless-title {
+            margin: 0;
+            font-size: clamp(1.6rem, 4.5vw, 2.2rem);
+            font-weight: 400;
+            color: var(--accent);
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+            letter-spacing: 2px;
+        }
+        .bless-text {
+            white-space: pre-line;
+            line-height: 2;
+            color: var(--text);
+            font-size: clamp(1rem, 2.4vw, 1.15rem);
+            min-height: 150px;
+            font-weight: 300;
+        }
+        .enter-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--accent);
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 400;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            padding: 8px 24px;
+            border-radius: 40px;
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            background: rgba(59, 130, 246, 0.04);
+        }
+        .enter-link:hover {
+            background: rgba(59, 130, 246, 0.08);
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        #danmakuContainer {
+            position: fixed; inset: 0; z-index: 5;
+            pointer-events: none; overflow: hidden;
+        }
+        .danmaku {
+            position: absolute;
+            white-space: nowrap;
+            font-weight: 300;
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: danmakuScroll linear forwards;
+            text-shadow: 0 0 8px rgba(59, 130, 246, 0.15);
+        }
+        @keyframes danmakuScroll {
+            0% { transform: translateX(100vw); opacity: 0.5; }
+            8% { opacity: 0.85; }
+            85% { opacity: 0.85; }
+            100% { transform: translateX(-100%); opacity: 0; }
+        }
+
+        #wishOverlay {
+            position: fixed; inset: 0; z-index: 50;
+            display: none;
+            justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.12);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        #wishOverlay.show { display: flex; }
+        .wish-card {
+            background: rgba(255,255,255,0.78);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(59,130,246,0.15);
+            border-radius: var(--radius-lg);
+            padding: 36px 32px;
+            text-align: center;
+            max-width: 380px; width: 88%;
+            box-shadow: 0 24px 80px rgba(59,130,246,0.12);
+            animation: wishPopIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes wishPopIn {
+            0% { transform: scale(0.78); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .wish-emoji { font-size: 2.6rem; margin-bottom: 10px; }
+        .wish-title { font-size: 1.5rem; color: var(--accent); font-weight: 400; margin-bottom: 12px; letter-spacing: 2px; }
+        .wish-desc { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.8; }
+        .wish-countdown { margin-top: 20px; font-size: 0.85rem; color: var(--text-secondary); opacity: 0.6; }
+
+        #ambientLights {
+            position: fixed;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 4;
+        }
+        .ambient-light {
+            position: absolute;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.07s ease, box-shadow 0.07s ease;
+            will-change: opacity, box-shadow;
+        }
+
+        /* 生日倒计时 */
+        #countdownOverlay {
+            position: fixed; inset: 0; z-index: 99999;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            background: var(--bg);
+            background: radial-gradient(ellipse at 50% 30%, rgba(59,130,246,0.04) 0%, transparent 60%), var(--bg);
+            transition: opacity 0.8s ease;
+        }
+        #countdownOverlay.hidden { opacity: 0; pointer-events: none; }
+        .cd-card {
+            text-align: center;
+            background: rgba(255,255,255,0.55);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(59,130,246,0.12);
+            border-radius: var(--radius-lg);
+            padding: 40px 36px;
+            box-shadow: 0 20px 60px rgba(59,130,246,0.08);
+            max-width: 520px; width: 90%;
+            animation: cdFadeIn 0.8s ease;
+        }
+        @keyframes cdFadeIn {
+            0% { opacity: 0; transform: translateY(20px) scale(0.96); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .cd-title {
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            color: var(--accent);
+            letter-spacing: 4px;
+            font-weight: 400;
+            margin-bottom: 4px;
+            text-shadow: 0 0 20px rgba(59,130,246,0.15);
+        }
+        .cd-label {
+            font-size: 1rem; color: var(--text-secondary);
+            letter-spacing: 4px; font-weight: 300;
+            margin-bottom: 24px;
+        }
+        .cd-numbers {
+            display: flex; justify-content: center; align-items: baseline;
+            gap: 4px; margin-bottom: 20px;
+        }
+        .cd-unit {
+            display: flex; flex-direction: column; align-items: center;
+            min-width: 64px;
+        }
+        .cd-unit .num {
+            font-size: clamp(2.4rem, 6vw, 3.6rem);
+            font-weight: 300; color: var(--accent);
+            letter-spacing: 2px;
+            line-height: 1.1;
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 0 20px rgba(59,130,246,0.15);
+        }
+        .cd-unit small {
+            font-size: 0.7rem; color: var(--text-secondary);
+            letter-spacing: 1px; margin-top: 2px;
+        }
+        .cd-sep {
+            font-size: clamp(1.6rem, 4vw, 2.6rem);
+            color: var(--accent); opacity: 0.35;
+            font-weight: 200; margin: 0 2px;
+            padding-bottom: 18px;
+        }
+        .cd-sub {
+            font-size: 0.85rem; color: var(--text-secondary);
+            letter-spacing: 1px; font-weight: 300;
+        }
+        .cd-birthday {
+            display: none;
+            font-size: clamp(1.6rem, 5vw, 2.4rem);
+            color: var(--accent);
+            letter-spacing: 3px;
+            font-weight: 400;
+            margin-top: 12px;
+            animation: cdFadeIn 0.6s ease;
+        }
+        .cd-entry {
+            position: fixed; left: 16px; bottom: 16px;
+            font-size: 0.78rem; color: var(--text-secondary);
+            opacity: 0.35; cursor: pointer;
+            letter-spacing: 0.5px; z-index: 100000;
+            transition: opacity 0.3s;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .cd-entry:hover { opacity: 0.7; }
+
+        @media (max-width: 480px) {
+            .cd-card { padding: 28px 18px; }
+            .cd-unit { min-width: 48px; }
+        }
+
+        @media (max-width: 600px) {
+            .cake-layer.layer1 { width: 140px; height: 40px; }
+            .cake-layer.layer2 { width: 160px; height: 36px; }
+            .cake-layer.layer3 { width: 180px; height: 32px; }
+            .bless-wrap.expanded { width: 88%; min-height: 250px; }
+            .danmaku { animation-duration: 5s !important; font-size: 13px !important; }
+        }
+
+        /* 留言板弹窗 */
+        .msg-overlay {
+            position: fixed; inset: 0; z-index: 99999;
+            background: rgba(0,0,0,0.12);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center; align-items: center;
+            padding: 20px;
+        }
+        .msg-overlay.show { display: flex; }
+        .msg-modal {
+            background: rgba(255,255,255,0.82);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid rgba(59,130,246,0.15);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            width: 88%; max-width: 420px;
+            max-height: 80vh;
+            box-shadow: 0 24px 80px rgba(59,130,246,0.15);
+            display: flex; flex-direction: column;
+            animation: modalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes modalIn {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .msg-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px;
+        }
+        .msg-title { font-size: 1.2rem; color: var(--accent); letter-spacing: 2px; }
+        .msg-close {
+            font-size: 1.6rem; color: var(--text-secondary); cursor: pointer;
+            padding: 0 8px; line-height: 1;
+            transition: color 0.2s; touch-action: manipulation;
+        }
+        .msg-close:hover { color: var(--text); }
+        .msg-body { overflow-y: auto; flex: 1; }
+        .msg-input, .msg-textarea {
+            width: 100%; padding: 12px 14px;
+            border: 1px solid rgba(59,130,246,0.15);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem; font-family: inherit;
+            background: rgba(255,255,255,0.6);
+            color: var(--text); outline: none;
+            transition: border-color 0.3s;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        .msg-input:focus, .msg-textarea:focus { border-color: var(--accent); }
+        .msg-textarea { min-height: 80px; resize: vertical; }
+        .msg-submit {
+            width: 100%; padding: 12px;
+            background: linear-gradient(135deg, var(--accent), #2563eb);
+            color: #fff; border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem; font-family: inherit;
+            cursor: pointer; letter-spacing: 1px;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+            touch-action: manipulation;
+        }
+        .msg-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59,130,246,0.3); }
+        .msg-submit:active { transform: translateY(1px); }
+        .msg-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+        .msg-list-title {
+            font-size: 0.82rem; color: var(--text-secondary);
+            margin-bottom: 10px; text-align: left; letter-spacing: 0.5px;
+        }
+        .msg-items { max-height: 200px; overflow-y: auto; }
+        .msg-item {
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.5);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            text-align: left;
+            font-size: 0.85rem;
+            border: 1px solid rgba(59,130,246,0.08);
+        }
+        .msg-item .msg-item-name {
+            font-weight: 500; color: var(--accent); font-size: 0.78rem;
+        }
+        .msg-item .msg-item-text {
+            color: var(--text); line-height: 1.5; margin-top: 2px;
+        }
+        .msg-item .msg-item-time {
+            font-size: 0.68rem; color: var(--text-secondary); opacity: 0.5;
+            margin-top: 4px;
+        }
+        .msg-empty {
+            text-align: center; color: var(--text-secondary);
+            font-size: 0.85rem; padding: 20px 0; opacity: 0.6;
+        }
+        .msg-toast {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.7);
+            color: #fff; padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem; z-index: 100000;
+            pointer-events: none;
+            animation: toastFade 2s ease forwards;
+        }
+        @keyframes toastFade {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            15% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+        }
+        .msg-btn-index {
+            display: inline-block; margin-top: 20px; margin-left: 8px;
+            padding: 8px 20px;
+            background: rgba(59,130,246,0.06);
+            border: 1px solid rgba(59,130,246,0.15);
+            border-radius: 30px;
+            color: var(--accent); font-size: 0.85rem;
+            cursor: pointer; font-family: inherit;
+            transition: all 0.3s; touch-action: manipulation;
+        }
+        .msg-btn-index:hover {
+            background: rgba(59,130,246,0.1);
+            border-color: rgba(59,130,246,0.3);
+        }
+
+    </style>
+</head>
+<body>
+    <div id="countdownOverlay">
+        <div class="cd-card">
+            <div class="cd-title">伍希彦</div>
+            <div class="cd-label" id="cdLabel">距离生日还有</div>
+            <div class="cd-numbers">
+                <div class="cd-unit">
+                    <span class="num" id="cdDays">00</span>
+                    <small>天</small>
+                </div>
+                <span class="cd-sep">:</span>
+                <div class="cd-unit">
+                    <span class="num" id="cdHours">00</span>
+                    <small>时</small>
+                </div>
+                <span class="cd-sep">:</span>
+                <div class="cd-unit">
+                    <span class="num" id="cdMins">00</span>
+                    <small>分</small>
+                </div>
+                <span class="cd-sep">:</span>
+                <div class="cd-unit">
+                    <span class="num" id="cdSecs">00</span>
+                    <small>秒</small>
+                </div>
+            </div>
+            <div class="cd-sub" id="cdSub">2026年3月15日 · 15岁生日</div>
+            <div class="cd-birthday" id="cdBirthday">🎂 生日快乐！🎉</div>
+        </div>
+        <div style="text-align:center;margin-top:16px;">
+            <button class="msg-btn-index" id="msgBtn">💬 留言</button>
+        </div>
+        <div class="cd-entry" id="cdEntry">测试入口</div>
+    </div>
+
+    <canvas id="bg"></canvas>
+    <div class="confetti-container" id="confettiContainer"></div>
+    <canvas id="textFx"></canvas>
+    <div id="danmakuContainer"></div>
+    <section class="screen" id="introScreen"></section>
+
+    <section class="screen hidden" id="cakeScreen">
+        <div class="cake-stage" id="cakeStage">
+            <div class="cake-layer layer1" id="cakeLayer1"></div>
+            <div class="cake-layer layer2" id="cakeLayer2"></div>
+            <div class="cake-layer layer3" id="cakeLayer3"></div>
+            <div class="drip-cream" id="dripCream"></div>
+            <div class="candle" id="candle"><div class="flame" id="flame"><div class="flame-glow"></div></div></div>
+        </div>
+        <div id="ambientLights"></div>
+        <div class="happy-birthday-text" id="happyText">happy birthday</div>
+        <button id="micBtn"> 吹蜡烛</button>
+        <div id="blowMeter"><i id="meterFill"></i></div>
+        <div class="hint" id="cakeHint">对着麦克风吹气，蜡烛熄灭愿望成真 ❤️</div>
+        <div class="hint skip-hint hidden" id="skipBlow">点击跳过</div>
+    </section>
+
+    <section class="screen hidden" id="blessScreen">
+        <div class="bless-wrap" id="blessWrap">
+            <div class="bless-content">
+                <h2 class="bless-title">来自机长的祝福</h2>
+                <div class="bless-text" id="blessText"></div>
+                <div class="enter-link" id="enterLink" style="display:none;">点击进入拍照留念</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 留言板弹窗 -->
+    <div id="messageOverlay" class="msg-overlay">
+        <div class="msg-modal">
+            <div class="msg-header">
+                <span class="msg-title">💬 留言板</span>
+                <span class="msg-close" id="msgClose">&times;</span>
+            </div>
+            <div class="msg-body">
+                <div class="msg-form">
+                    <input type="text" id="msgName" placeholder="你的名字（选填）" class="msg-input" maxlength="20">
+                    <textarea id="msgContent" placeholder="写下你的祝福..." class="msg-textarea" maxlength="200"></textarea>
+                    <button id="msgSubmit" class="msg-submit">发送祝福</button>
+                </div>
+                <div class="msg-list">
+                    <div class="msg-list-title">已有祝福</div>
+                    <div class="msg-items" id="msgItems">
+                        <div class="msg-empty" id="msgEmpty">加载中...</div>
+                    </div>
+                </div>
+                <div style="text-align:center;margin-top:6px;">
+                    <span id="adminEntry" style="font-size:0.65rem;color:var(--text-secondary);opacity:0.2;cursor:pointer;touch-action:manipulation;" title="管理入口">⚙️</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const friendName = "伍希彦";
+            const bg = document.getElementById("bg");
+            const bgCtx = bg.getContext("2d");
+            const textFx = document.getElementById("textFx");
+            const tCtx = textFx.getContext("2d");
+            const off = document.createElement("canvas");
+            const offCtx = off.getContext("2d");
+            const svgMask = document.createElement("canvas");
+            const svgMaskCtx = svgMask.getContext("2d");
+            let w = 0, h = 0, dpr = 1;
+            const FONT_CANDIDATES = [
+                '"Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif',
+                '"Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif',
+                '"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
+                'sans-serif'
+            ];
+            let dots = [];
+            let ambientLightElements = [];
+
+            function getParticleCount() {
+                const area = window.innerWidth * window.innerHeight;
+                const cpu = navigator.hardwareConcurrency || 4;
+                const memory = navigator.deviceMemory || 4;
+                if (cpu <= 4 || memory <= 4) return area < 420000 ? 1800 : 2400;
+                if (area < 420000) return 2400;
+                if (area < 920000) return 3200;
+                return 4000;
+            }
+
+            function rebuildDots() {
+                const particleCount = getParticleCount();
+                dots = Array.from({ length: particleCount }, () => ({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    tx: Math.random() * w,
+                    ty: Math.random() * h,
+                    vx: 0,
+                    vy: 0,
+                    a: 0.5 + Math.random() * 0.5,
+                    hue: 210 + Math.random() * 30
+                }));
+            }
+
+            function nextFrame() {
+                return new Promise(resolve => requestAnimationFrame(resolve));
+            }
+
+            async function waitForFonts() {
+                if (!document.fonts || !document.fonts.ready) return;
+                try {
+                    const fontLoads = FONT_CANDIDATES.map(fontFamily =>
+                        document.fonts.load(`800 72px ${fontFamily}`, `${friendName} Happy Birthday`)
+                    );
+                    await Promise.race([
+                        Promise.allSettled([document.fonts.ready, ...fontLoads]),
+                        new Promise(resolve => setTimeout(resolve, 2600))
+                    ]);
+                } catch (e) {}
+            }
+
+            function createConfetti() {
+                const container = document.getElementById("confettiContainer");
+                const colors = ['#3b82f6', '#60a5fa', '#2563eb', '#93c5fd', '#1d4ed8', '#7cb8ff', '#4a90d9'];
+                for (let i=0; i<40; i++) {
+                    const piece = document.createElement("div");
+                    piece.className = "confetti-piece";
+                    piece.style.left = Math.random() * 100 + "%";
+                    piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    piece.style.animationDuration = (Math.random() * 3 + 5) + "s";
+                    piece.style.animationDelay = Math.random() * 6 + "s";
+                    piece.style.width = (Math.random() * 8 + 4) + "px";
+                    piece.style.height = (Math.random() * 8 + 4) + "px";
+                    piece.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+                    container.appendChild(piece);
+                }
+            }
+            createConfetti();
+
+            function resize() {
+                dpr = window.devicePixelRatio || 1;
+                w = window.innerWidth;
+                h = window.innerHeight;
+                [bg, textFx, off, svgMask].forEach(c => {
+                    c.width = Math.floor(w * dpr);
+                    c.height = Math.floor(h * dpr);
+                });
+                bgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                tCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                offCtx.setTransform(1, 0, 0, 1, 0, 0);
+                svgMaskCtx.setTransform(1, 0, 0, 1, 0, 0);
+                const nextParticleCount = getParticleCount();
+                if (!dots.length || dots.length !== nextParticleCount) {
+                    rebuildDots();
+                } else {
+                    dots.forEach(dot => {
+                        dot.x = Math.min(Math.max(dot.x, 0), w);
+                        dot.y = Math.min(Math.max(dot.y, 0), h);
+                        dot.tx = Math.min(Math.max(dot.tx, 0), w);
+                        dot.ty = Math.min(Math.max(dot.ty, 0), h);
+                    });
+                }
+            }
+            window.addEventListener("resize", resize);
+            resize();
+
+            const balloons = [];
+            const balloonColors = ['#3b82f6', '#60a5fa', '#2563eb', '#93c5fd', '#1d4ed8', '#7cb8ff', '#4a90d9'];
+            for (let i=0; i<14; i++) {
+                balloons.push({
+                    x: Math.random() * w, y: h + Math.random() * 200,
+                    radius: 22 + Math.random() * 20,
+                    color: balloonColors[Math.floor(Math.random() * balloonColors.length)],
+                    speed: 0.4 + Math.random() * 0.7,
+                    wave: Math.random() * Math.PI*2, amplitude: 0.6 + Math.random() * 1.2,
+                    opacity: 0.6 + Math.random() * 0.3, stringLength: 40 + Math.random() * 30
+                });
+            }
+            function drawBalloons(ctx) {
+                for (let b of balloons) {
+                    ctx.save(); ctx.globalAlpha = b.opacity;
+                    ctx.beginPath();
+                    ctx.ellipse(b.x, b.y, b.radius, b.radius*1.2, 0, 0, Math.PI*2);
+                    ctx.fillStyle = b.color; ctx.fill();
+                    ctx.strokeStyle = 'rgba(59, 130, 246, 0.15)'; ctx.lineWidth = 1; ctx.stroke();
+                    ctx.beginPath();
+                    ctx.ellipse(b.x - b.radius*0.25, b.y - b.radius*0.2, b.radius*0.15, b.radius*0.2, 0, 0, Math.PI*2);
+                    ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.fill();
+                    ctx.fillStyle = 'rgba(59, 130, 246, 0.2)';
+                    ctx.fillRect(b.x-3, b.y+b.radius*1.05, 6, 6);
+                    ctx.beginPath();
+                    ctx.moveTo(b.x, b.y+b.radius*1.2);
+                    ctx.lineTo(b.x + Math.sin(b.x*0.01)*2, b.y+b.radius*1.2+b.stringLength);
+                    ctx.strokeStyle = 'rgba(59, 130, 246, 0.15)'; ctx.lineWidth = 1; ctx.stroke();
+                    ctx.restore();
+                }
+            }
+            function updateBalloons() {
+                for (let b of balloons) {
+                    b.y -= b.speed; b.x += Math.sin(b.wave) * b.amplitude; b.wave += 0.02;
+                    if (b.y < -b.radius*2) { b.y = h + b.radius*2; b.x = Math.random() * w; }
+                }
+            }
+
+            const bgParticles = Array.from({ length: 50 }, () => ({
+                x: Math.random() * w, y: Math.random() * h,
+                vx: -0.1 + Math.random() * 0.2, vy: -0.08 + Math.random() * 0.16,
+                r: 0.6 + Math.random() * 1.2, a: 0.06 + Math.random() * 0.1
+            }));
+            function renderBg() {
+                bgCtx.clearRect(0, 0, w, h);
+                for (const p of bgParticles) {
+                    p.x += p.vx; p.y += p.vy;
+                    if (p.x < -10) p.x = w + 10; if (p.x > w + 10) p.x = -10;
+                    if (p.y < -10) p.y = h + 10; if (p.y > h + 10) p.y = -10;
+                    bgCtx.fillStyle = `rgba(59, 130, 246, ${p.a})`;
+                    bgCtx.beginPath(); bgCtx.arc(p.x, p.y, p.r, 0, Math.PI*2); bgCtx.fill();
+                }
+                updateBalloons(); drawBalloons(bgCtx);
+                requestAnimationFrame(renderBg);
+            }
+            renderBg();
+
+            function fitFontSize(text, maxSize, fontFamily) {
+                const cw = off.width;
+                let size = Math.min(maxSize, Math.floor(w * 0.2));
+                offCtx.setTransform(1,0,0,1,0,0);
+                offCtx.font = `800 ${size*dpr}px ${fontFamily}`;
+                const maxWidth = cw * 0.82;
+                while (offCtx.measureText(text).width > maxWidth && size > 40) {
+                    size -= 4;
+                    offCtx.font = `800 ${size*dpr}px ${fontFamily}`;
+                }
+                return size;
+            }
+            function collectTextPoints(sourceCtx, sourceCanvas) {
+                const cw = sourceCanvas.width, ch = sourceCanvas.height;
+                const cssStep = Math.max(1, Math.floor(Math.min(w,h)/260));
+                const step = cssStep * dpr;
+                const img = sourceCtx.getImageData(0,0,cw,ch).data;
+                const pts = [];
+                for (let y=0; y<ch; y+=step) {
+                    for (let x=0; x<cw; x+=step) {
+                        if (img[(y*cw+x)*4+3] > 140) pts.push({x:x/dpr, y:y/dpr});
+                    }
+                }
+                return pts;
+            }
+
+            function getTextPointsFromCanvas(text, sizePx, fontFamily) {
+                const cw = off.width, ch = off.height;
+                offCtx.setTransform(1,0,0,1,0,0);
+                offCtx.clearRect(0,0,cw,ch);
+                offCtx.fillStyle = "#fff";
+                offCtx.textAlign = "center";
+                offCtx.textBaseline = "middle";
+                offCtx.font = `800 ${sizePx*dpr}px ${fontFamily}`;
+                offCtx.fillText(text, cw/2, ch/2);
+                return collectTextPoints(offCtx, off);
+            }
+
+            function escapeSvgText(text) {
+                return text
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&apos;");
+            }
+
+            async function getTextPointsFromSvg(text, sizePx, fontFamily) {
+                const cw = svgMask.width;
+                const ch = svgMask.height;
+                const svg = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="${cw}" height="${ch}" viewBox="0 0 ${cw} ${ch}">
+                        <rect width="100%" height="100%" fill="black"/>
+                        <text
+                            x="50%"
+                            y="50%"
+                            fill="white"
+                            font-family="${fontFamily}"
+                            font-size="${sizePx * dpr}px"
+                            font-weight="800"
+                            text-anchor="middle"
+                            dominant-baseline="middle">${escapeSvgText(text)}</text>
+                    </svg>
+                `;
+                const img = new Image();
+                img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+                if (img.decode) {
+                    try {
+                        await img.decode();
+                    } catch (e) {
+                        await new Promise((resolve, reject) => {
+                            img.onload = resolve;
+                            img.onerror = reject;
+                        });
+                    }
+                } else {
+                    await new Promise((resolve, reject) => {
+                        img.onload = resolve;
+                        img.onerror = reject;
+                    });
+                }
+                svgMaskCtx.setTransform(1,0,0,1,0,0);
+                svgMaskCtx.clearRect(0,0,cw,ch);
+                svgMaskCtx.drawImage(img, 0, 0, cw, ch);
+                return collectTextPoints(svgMaskCtx, svgMask);
+            }
+
+            async function findBestTextPoints(text, maxSize) {
+                let bestPts = [];
+                let bestSize = maxSize;
+                for (const fontFamily of FONT_CANDIDATES) {
+                    const size = fitFontSize(text, maxSize, fontFamily);
+                    let pts = [];
+                    try {
+                        pts = await getTextPointsFromSvg(text, size, fontFamily);
+                    } catch (e) {}
+                    if (pts.length < Math.max(180, dots.length * 0.12)) {
+                        const canvasPts = getTextPointsFromCanvas(text, size, fontFamily);
+                        if (canvasPts.length > pts.length) pts = canvasPts;
+                    }
+                    if (pts.length > bestPts.length) {
+                        bestPts = pts;
+                        bestSize = size;
+                    }
+                    if (pts.length >= Math.max(180, dots.length * 0.12)) break;
+                }
+                return { pts: bestPts, size: bestSize };
+            }
+            // ---- 足球场粒子形状 ----
+            function getFootballFieldPoints(w, h, count) {
+                const pts = [];
+                const ratio = 1.54;
+                let fw, fh;
+                if (w / h > ratio) { fh = h; fw = fh * ratio; }
+                else { fw = w; fh = fw / ratio; }
+                const lx = (w - fw) / 2, rx = lx + fw;
+                const ty = (h - fh) / 2, by = ty + fh;
+                const cx = w / 2, cy = h / 2;
+                const cr = fw * 0.10;
+
+                // 按比例分配粒子到各特征
+                const parts = [
+                    Math.floor(count * 0.30),
+                    Math.floor(count * 0.10),
+                    Math.floor(count * 0.15),
+                    Math.floor(count * 0.20),
+                    Math.floor(count * 0.10),
+                    Math.floor(count * 0.15),
+                ];
+                let total = parts.reduce((a,b)=>a+b,0);
+                parts[0] += count - total;
+
+                // 1. 外框
+                const pl = 2 * (fw + fh);
+                for (let i = 0; i < parts[0]; i++) {
+                    const t = i / parts[0];
+                    const d = t * pl;
+                    if (d < fw)           { pts.push({x: lx+d, y: ty}); }
+                    else if (d < fw+fh)   { pts.push({x: rx, y: ty+(d-fw)}); }
+                    else if (d < 2*fw+fh) { pts.push({x: rx-(d-fw-fh), y: by}); }
+                    else                  { pts.push({x: lx, y: by-(d-2*fw-fh)}); }
+                }
+
+                // 2. 中场线
+                for (let i = 0; i < parts[1]; i++) {
+                    const t = i / parts[1];
+                    pts.push({x: lx + t*fw, y: cy});
+                }
+
+                // 3. 中圈
+                for (let i = 0; i < parts[2]; i++) {
+                    const a = (i / parts[2]) * 2 * Math.PI;
+                    pts.push({x: cx + Math.cos(a)*cr, y: cy + Math.sin(a)*cr});
+                }
+
+                // 4. 禁区 (左右各半)
+                const pw = fw * 0.22, ph = fh * 0.44;
+                const ptop = cy - ph/2, pbot = cy + ph/2;
+                for (let side = 0; side < 2; side++) {
+                    const n = Math.floor(parts[3] / 2);
+                    const baseX = side === 0 ? lx : rx - pw;
+                    for (let i = 0; i < n; i++) {
+                        const t = i / n;
+                        const d = t * 2 * (pw + ph);
+                        if (d < pw)           { pts.push({x: baseX+d, y: ptop}); }
+                        else if (d < pw+ph)   { pts.push({x: baseX+pw, y: ptop+(d-pw)}); }
+                        else if (d < 2*pw+ph) { pts.push({x: baseX+pw-(d-pw-ph), y: pbot}); }
+                        else                  { pts.push({x: baseX, y: pbot-(d-2*pw-ph)}); }
+                    }
+                }
+
+                // 5. 小禁区 (左右各半)
+                const gw = fw * 0.08, gh = fh * 0.22;
+                const gtop = cy - gh/2, gbot = cy + gh/2;
+                for (let side = 0; side < 2; side++) {
+                    const n = Math.floor(parts[4] / 2);
+                    const baseX = side === 0 ? lx : rx - gw;
+                    for (let i = 0; i < n; i++) {
+                        const t = i / n;
+                        const d = t * 2 * (gw + gh);
+                        if (d < gw)           { pts.push({x: baseX+d, y: gtop}); }
+                        else if (d < gw+gh)   { pts.push({x: baseX+gw, y: gtop+(d-gw)}); }
+                        else if (d < 2*gw+gh) { pts.push({x: baseX+gw-(d-gw-gh), y: gbot}); }
+                        else                  { pts.push({x: baseX, y: gbot-(d-2*gw-gh)}); }
+                    }
+                }
+
+                // 6. 禁区弧 (左右各半圆)
+                const arcR = fw * 0.08;
+                for (let side = 0; side < 2; side++) {
+                    const n = Math.floor(parts[5] / 2);
+                    const arcCx = side === 0 ? lx + pw : rx - pw;
+                    for (let i = 0; i < n; i++) {
+                        const a = Math.PI * (side === 0 ? -0.5 : 0.5) + (i / n) * Math.PI;
+                        pts.push({x: arcCx + Math.cos(a)*arcR, y: cy + Math.sin(a)*arcR});
+                    }
+                }
+
+                // 打乱顺序让过渡更自然
+                for (let i = pts.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [pts[i], pts[j]] = [pts[j], pts[i]];
+                }
+                return pts;
+            }
+            function morphTo(text, maxSize, scatter=false) {
+                return new Promise(resolve => {
+                    if (scatter) {
+                        const targets = scatter === 'football' ? getFootballFieldPoints(w, h, dots.length) : null;
+                        for (let i = 0; i < dots.length; i++) {
+                            if (targets) { dots[i].tx = targets[i].x; dots[i].ty = targets[i].y; }
+                            else { dots[i].tx = Math.random()*w; dots[i].ty = Math.random()*h; }
+                        }
+                    }
+                    setTimeout(async () => {
+                        let bestResult = await findBestTextPoints(text, maxSize);
+                        for (let attempt = 0; attempt < 3 && bestResult.pts.length < Math.max(180, dots.length * 0.12); attempt++) {
+                            await nextFrame();
+                            const retryResult = await findBestTextPoints(text, maxSize);
+                            if (retryResult.pts.length > bestResult.pts.length) {
+                                bestResult = retryResult;
+                            }
+                        }
+                        const { pts } = bestResult;
+                        let selected;
+                        if (pts.length >= dots.length) {
+                            const sh = [...pts]; for (let i=sh.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[sh[i],sh[j]]=[sh[j],sh[i]];}
+                            selected = sh.slice(0,dots.length);
+                        } else if (pts.length>0) {
+                            const sh = [...pts]; for (let i=sh.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[sh[i],sh[j]]=[sh[j],sh[i]];}
+                            selected = []; for (let i=0;i<dots.length;i++) selected.push(sh[i%sh.length]);
+                        } else { selected = dots.map(d=>({x:d.tx, y:d.ty})); }
+                        for (let i=0;i<dots.length;i++) { dots[i].tx = selected[i].x; dots[i].ty = selected[i].y; }
+                        setTimeout(resolve, 2200);
+                    }, scatter === 'football' ? 2500 : scatter ? 900 : 100);
+                });
+            }
+            function morphToLine() {
+                return new Promise(resolve => {
+                    const lineY = h*0.53;
+                    const lineWidth = w * 0.85;
+                    const leftX = (w - lineWidth) / 2;
+                    const lineHeight = 4;
+                    const pts = [];
+                    for (let y = lineY - lineHeight/2; y <= lineY + lineHeight/2; y += 2) {
+                        for (let x = leftX; x <= leftX + lineWidth; x += 2) {
+                            pts.push({ x, y });
+                        }
+                    }
+                    const shuffled = [...pts];
+                    for (let i = shuffled.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                    }
+                    const selected = [];
+                    for (let i = 0; i < dots.length; i++) selected.push(shuffled[i % shuffled.length]);
+                    for (let i = 0; i < dots.length; i++) { dots[i].tx = selected[i].x; dots[i].ty = selected[i].y; }
+                    setTimeout(resolve, 2000);
+                });
+            }
+
+            let textActive = true;
+            function renderTextFx() {
+                tCtx.clearRect(0,0,w,h);
+                if (textActive) {
+                    for (const p of dots) {
+                        const dx=p.tx-p.x, dy=p.ty-p.y;
+                        p.vx+=dx*0.018; p.vy+=dy*0.018; p.vx*=0.84; p.vy*=0.84;
+                        p.x+=p.vx; p.y+=p.vy;
+                        tCtx.fillStyle=`hsla(${p.hue}, 85%, 50%, ${p.a})`;
+                        tCtx.beginPath(); tCtx.arc(p.x,p.y,1.8,0,Math.PI*2); tCtx.fill();
+                    }
+                }
+                requestAnimationFrame(renderTextFx);
+            }
+            renderTextFx();
+
+            const introScreen = document.getElementById("introScreen");
+            const cakeScreen = document.getElementById("cakeScreen");
+            const blessScreen = document.getElementById("blessScreen");
+            const cakeStage = document.getElementById("cakeStage");
+            const cakeLayer1 = document.getElementById("cakeLayer1");
+            const cakeLayer2 = document.getElementById("cakeLayer2");
+            const cakeLayer3 = document.getElementById("cakeLayer3");
+            const dripCream = document.getElementById("dripCream");
+            const candle = document.getElementById("candle");
+            const flame = document.getElementById("flame");
+            const happyText = document.getElementById("happyText");
+            const micBtn = document.getElementById("micBtn");
+            const meterFill = document.getElementById("meterFill");
+            const cakeHint = document.getElementById("cakeHint");
+            const blessWrap = document.getElementById("blessWrap");
+            const blessText = document.getElementById("blessText");
+            const enterLink = document.getElementById("enterLink");
+
+            function sleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
+
+            function alignAllToLine() {
+                const isMobile = window.innerWidth < 600;
+                const lineY = h * (isMobile ? 0.45 : 0.48);
+                const cakeHeight = cakeLayer3.offsetHeight + cakeLayer2.offsetHeight + cakeLayer1.offsetHeight - 6;
+                cakeStage.style.top = (lineY - cakeHeight) + "px";
+
+                const textH = happyText.offsetHeight || (isMobile ? 36 : 50);
+                const textTop = lineY + (isMobile ? 6 : 20);
+                happyText.style.top = textTop + "px";
+
+                const btnTop = textTop + textH + (isMobile ? 12 : 50);
+                micBtn.style.top = btnTop + "px";
+                document.getElementById("blowMeter").style.top = (btnTop + (isMobile ? 38 : 60)) + "px";
+                document.getElementById("cakeHint").style.top = (btnTop + (isMobile ? 48 : 80)) + "px";
+                document.getElementById("skipBlow").style.top = (btnTop + (isMobile ? 48 : 80) + 34) + "px";
+            }
+
+            function createAmbientLights() {
+                const container = document.getElementById('ambientLights');
+                if (!container) return;
+                container.innerHTML = '';
+                ambientLightElements = [];
+                const cx = window.innerWidth / 2;
+                const cy = window.innerHeight / 2 - 55;
+                const radiusX = Math.min(200, window.innerWidth * 0.28);
+                const radiusY = Math.min(110, window.innerHeight * 0.12);
+                const count = Math.min(24, Math.floor(window.innerWidth / 18));
+                for (let i = 0; i < count; i++) {
+                    const angle = (i / count) * Math.PI * 2;
+                    const x = cx + Math.cos(angle) * radiusX;
+                    const y = cy + Math.sin(angle) * radiusY;
+                    const el = document.createElement('div');
+                    el.className = 'ambient-light';
+                    el.style.cssText = `left:${x}px;top:${y}px;background:rgba(59,130,246,0.3);box-shadow:0 0 6px rgba(59,130,246,0.15);opacity:0.03`;
+                    container.appendChild(el);
+                    ambientLightElements.push(el);
+                }
+            }
+            function updateAmbientLights(level) {
+                for (const el of ambientLightElements) {
+                    const brightness = 0.03 + level * 0.6;
+                    el.style.opacity = brightness;
+                    el.style.boxShadow = `0 0 ${2 + level * 18}px rgba(59,130,246,0.3)`;
+                }
+            }
+
+            function createSplashDrops(layerEl) {
+                const stage = document.getElementById('cakeStage');
+                const bg = getComputedStyle(layerEl).backgroundColor;
+                const count = 5 + Math.floor(Math.random() * 4);
+                for (let i = 0; i < count; i++) {
+                    const drop = document.createElement('div');
+                    const size = 3 + Math.random() * 7;
+                    const xOffset = (Math.random() - 0.5) * layerEl.offsetWidth * 1.2;
+                    const dy = 8 + Math.random() * 24;
+                    const dx = (Math.random() - 0.5) * 14;
+                    drop.style.cssText = `
+                        position:absolute; left:${layerEl.offsetWidth/2+xOffset}px;
+                        top:${layerEl.offsetHeight-4}px;
+                        width:${size}px; height:${size}px;
+                        border-radius:50%; background:${bg};
+                        z-index:5; pointer-events:none;
+                        opacity:0.85; filter:blur(0.5px);
+                    `;
+                    stage.appendChild(drop);
+                    const dur = 0.25 + Math.random() * 0.35;
+                    drop.animate([
+                        { transform: 'translate(0,0) scale(1)', opacity: 0.85 },
+                        { transform: `translate(${dx}px, ${dy}px) scale(0.15)`, opacity: 0 }
+                    ], { duration: dur * 1000, easing: 'ease-out', fill: 'forwards' });
+                    setTimeout(() => drop.remove(), dur * 1000 + 50);
+                }
+            }
+
+            async function buildCake() {
+                alignAllToLine();
+                createAmbientLights();
+                const layers = [cakeLayer3, cakeLayer2, cakeLayer1];
+                for (let i = 0; i < layers.length; i++) {
+                    layers[i].classList.add("splat-in");
+                    layers[i].style.opacity = "1";
+                    await sleep(300);
+                    createSplashDrops(layers[i]);
+                    await sleep(250);
+                }
+                dripCream.classList.add("show");
+                await sleep(300);
+                candle.classList.add("show");
+                await sleep(200);
+                happyText.classList.add("show");
+            }
+
+            function playBirthdaySong() {
+                try {
+                    const AC = window.AudioContext || window.webkitAudioContext;
+                    const ac = new AC();
+                    const notes = [392,392,440,392,523,494,392,392,440,392,587,523];
+                    let t = ac.currentTime;
+                    for (let i=0;i<notes.length;i++) {
+                        const o=ac.createOscillator(), g=ac.createGain();
+                        o.type="triangle"; o.frequency.value=notes[i];
+                        g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.2,t+0.03);
+                        g.gain.exponentialRampToValueAtTime(0.0001,t+0.34);
+                        o.connect(g).connect(ac.destination); o.start(t); o.stop(t+0.36);
+                        t+=i===5?0.56:0.42;
+                    }
+                } catch(e) {}
+            }
+
+            let micStarted = false;
+            async function enableBlowDetect() {
+                if (micStarted) return;
+                micStarted = true;
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    const AC = window.AudioContext || window.webkitAudioContext;
+                    const ac = new AC();
+                    const src = ac.createMediaStreamSource(stream);
+                    const analyser = ac.createAnalyser();
+                    analyser.fftSize = 1024; src.connect(analyser);
+                    const arr = new Uint8Array(analyser.frequencyBinCount);
+                    let hold = 0;
+                    function check() {
+                        analyser.getByteTimeDomainData(arr);
+                        let sum=0; for (let i=0;i<arr.length;i++) { const v=(arr[i]-128)/128; sum+=v*v; }
+                        const rms=Math.sqrt(sum/arr.length), level=Math.min(1,rms*7.5);
+                        meterFill.style.width=(level*100).toFixed(0)+"%";
+                        updateAmbientLights(level);
+                        const blowing = level > 0.48;
+                        if (blowing) hold+=1; else hold=Math.max(0,hold-1);
+                        if (blowing && hold >= 2 && hold <= 6) {
+                            flame.classList.add('wobble');
+                        } else if (!blowing || hold > 6) {
+                            flame.classList.remove('wobble');
+                        }
+                        if (hold>6) {
+                            flame.classList.remove('wobble');
+                            flame.classList.add("off"); cakeHint.textContent="蜡烛熄灭！愿望成真！";
+                            stream.getTracks().forEach(t=>t.stop());
+                            textActive = false;
+                            textFx.classList.add("hidden");
+                            setTimeout(async () => {
+                                cakeScreen.classList.add("hidden");
+                                blessScreen.classList.remove("hidden");
+                                requestAnimationFrame(() => {
+                                    blessWrap.classList.add("expanded");
+                                });
+                                await sleep(700);
+                                await playBlessing();
+                            }, 600);
+                            return;
+                        }
+                        requestAnimationFrame(check);
+                    }
+                    check();
+                } catch (e) {
+                    micStarted = false;
+                    cakeHint.textContent = "麦克风未授权，请允许后再试。";
+                    document.getElementById('skipBlow').classList.remove('hidden');
+                }
+            }
+
+            async function playBlessing() {
+                const lines = [
+                    "伍希彦，祝你生日快乐！",
+                    "愿每一年你都可以开开心心",
+                    "保持对足球的热爱，取得成功",
+                    "希望我们永远是好朋友"
+                ];
+                blessText.textContent = "";
+                for (const line of lines) {
+                    for (const ch of line) { blessText.textContent += ch; await sleep(45); }
+                    blessText.textContent += "\n"; await sleep(420);
+                }
+                enterLink.style.display = "inline-block";
+                enterLink.addEventListener("click", () => {
+                    window.location.href = "photo.html";
+                });
+            }
+
+            window.addEventListener("resize", () => {
+                if (!cakeScreen.classList.contains("hidden")) { alignAllToLine(); createAmbientLights(); }
+            });
+
+            micBtn.addEventListener("click", enableBlowDetect);
+            document.getElementById('skipBlow').addEventListener('click', function skipCandle() {
+                this.removeEventListener('click', skipCandle);
+                flame.classList.add("off");
+                cakeHint.textContent = "已跳过！愿望成真！";
+                document.getElementById('skipBlow').classList.add('hidden');
+                if (micStarted) return;
+                textActive = false;
+                textFx.classList.add("hidden");
+                setTimeout(async () => {
+                    cakeScreen.classList.add("hidden");
+                    blessScreen.classList.remove("hidden");
+                    requestAnimationFrame(() => blessWrap.classList.add("expanded"));
+                    await sleep(700);
+                    await playBlessing();
+                }, 600);
+            });
+
+            // ---- 弹幕祝福（从 GitHub Issues 加载） ----
+            let danmakuMessages = [];
+            let danmakuTimer = null;
+            let danmakuIdx = 0;
+
+            async function loadDanmakuMessages() {
+                try {
+                    const res = await fetch('https://api.github.com/repos/raoroger380/wxysr315/issues?labels=message&state=open&per_page=50&sort=created&direction=desc');
+                    if (res.ok) {
+                        const issues = await res.json();
+                        danmakuMessages = issues.map(issue => issue.title).filter(Boolean);
+                    }
+                } catch(e) {}
+                if (danmakuMessages.length === 0) {
+                    danmakuMessages = ["🎂 生日快乐"];
+                }
+            }
+
+            function startDanmaku() {
+                const container = document.getElementById('danmakuContainer');
+                if (!container || danmakuMessages.length === 0) return;
+                function spawn() {
+                    if (introScreen.classList.contains('hidden')) return;
+                    const msg = danmakuMessages[danmakuIdx % danmakuMessages.length];
+                    danmakuIdx++;
+                    const el = document.createElement('div');
+                    el.className = 'danmaku';
+                    el.textContent = msg;
+                    const top = 5 + Math.random() * 70;
+                    const fontSize = 14 + Math.random() * 14;
+                    const duration = 6 + Math.random() * 6;
+                    const hue = 210 + Math.random() * 30;
+                    el.style.cssText = `
+                        top:${top}vh; font-size:${fontSize}px;
+                        color:hsla(${hue},80%,50%,0.8);
+                        animation-duration:${duration}s;
+                    `;
+                    container.appendChild(el);
+                    setTimeout(() => el.remove(), duration * 1000 + 500);
+                    danmakuTimer = setTimeout(spawn, 600 + Math.random() * 1200);
+                }
+                spawn();
+            }
+            function stopDanmaku() {
+                if (danmakuTimer) { clearTimeout(danmakuTimer); danmakuTimer = null; }
+            }
+
+            // ---- 许愿弹窗 ----
+            async function showWishPopup() {
+                const overlay = document.getElementById('wishOverlay');
+                const countdown = document.getElementById('wishCountdown');
+                overlay.classList.add('show');
+                micBtn.style.opacity = '0.35';
+                micBtn.style.pointerEvents = 'none';
+                let remaining = 5;
+                const timer = setInterval(() => {
+                    remaining--;
+                    if (remaining > 0) countdown.textContent = `${remaining}秒后可吹蜡烛`;
+                }, 1000);
+                await sleep(5000);
+                clearInterval(timer);
+                countdown.textContent = '可以吹蜡烛啦！';
+                await sleep(600);
+                overlay.classList.remove('show');
+                micBtn.style.opacity = '1';
+                micBtn.style.pointerEvents = 'auto';
+            }
+
+            async function run() {
+                await waitForFonts();
+                await loadDanmakuMessages();
+                startDanmaku();
+                await morphTo("嗨，朋友", 220, false);
+                await morphTo(`${friendName}，生日快乐`, 180, `football`);
+                await morphTo("Happy Birthday", 180, true);
+                await sleep(800);
+                await morphToLine();
+                stopDanmaku();
+                document.getElementById('danmakuContainer').innerHTML = '';
+                introScreen.classList.add("hidden");
+                cakeScreen.classList.remove("hidden");
+                playBirthdaySong();
+                await buildCake();
+                showWishPopup();
+            }
+            // ---- 生日倒计时（每年自动更新） ----
+            const BIRTH_YEAR = 2011;
+            const BIRTH_MONTH = 2; // 3月（0-indexed）
+            const BIRTH_DAY = 15;
+
+            function getNextBirthday() {
+                const now = new Date();
+                const year = now.getFullYear();
+                let bd = new Date(year, BIRTH_MONTH, BIRTH_DAY, 0, 0, 0);
+                if (now >= bd) bd = new Date(year + 1, BIRTH_MONTH, BIRTH_DAY, 0, 0, 0);
+                return bd;
+            }
+
+            const cdDays = document.getElementById('cdDays');
+            const cdHours = document.getElementById('cdHours');
+            const cdMins = document.getElementById('cdMins');
+            const cdSecs = document.getElementById('cdSecs');
+            const cdBirthday = document.getElementById('cdBirthday');
+            const cdNumbers = document.querySelector('.cd-numbers');
+            const cdSub = document.getElementById('cdSub');
+            let countdownTimer = null;
+            let entered = false;
+
+            function enterCelebration() {
+                if (entered) return;
+                entered = true;
+                document.getElementById('countdownOverlay').classList.add('hidden');
+                setTimeout(run, 900);
+            }
+
+            function updateCountdown() {
+                const now = Date.now();
+                const birthday = getNextBirthday();
+                const age = birthday.getFullYear() - BIRTH_YEAR;
+                cdSub.textContent = `${birthday.getFullYear()}年3月15日 · ${age}岁生日`;
+
+                const diff = birthday - now;
+                if (diff <= 0) {
+                    if (!entered) {
+                        cdNumbers.style.display = 'none';
+                        cdSub.style.display = 'none';
+                        cdBirthday.style.display = 'block';
+                        document.querySelector('.cd-label').textContent = '今天';
+                        document.getElementById('cdEntry').textContent = '✨ 点击进入 ✨';
+                        if (countdownTimer) {
+                            clearInterval(countdownTimer);
+                            countdownTimer = null;
+                        }
+                        setTimeout(enterCelebration, 3000);
+                    }
+                    return;
+                }
+                const totalSec = Math.floor(diff / 1000);
+                const d = Math.floor(totalSec / 86400);
+                const h = Math.floor((totalSec % 86400) / 3600);
+                const m = Math.floor((totalSec % 3600) / 60);
+                const s = totalSec % 60;
+                cdDays.textContent = String(d).padStart(2, '0');
+                cdHours.textContent = String(h).padStart(2, '0');
+                cdMins.textContent = String(m).padStart(2, '0');
+                cdSecs.textContent = String(s).padStart(2, '0');
+            }
+            updateCountdown();
+            countdownTimer = setInterval(updateCountdown, 1000);
+
+            // ---- Crypto helper (XOR + Base64) ----
+            function xorDecrypt(b64, key) {
+                const str = atob(b64);
+                let r = '';
+                for (let i = 0; i < str.length; i++) r += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+                return r;
+            }
+            // ---- 测试入口 ----
+            const PASSWORD = xorDecrypt('QEpNQ0MC', 'wxysr315');
+            document.getElementById('cdEntry').addEventListener('click', () => {
+                if (Date.now() >= getNextBirthday()) {
+                    enterCelebration();
+                    return;
+                }
+                const input = prompt('请输入测试密码：');
+                if (input === PASSWORD) {
+                    enterCelebration();
+                } else if (input !== null) {
+                    alert('密码错误');
+                }
+            });
+            // ---- 留言板（GitHub Issues API） ----
+            const GITHUB_TOKEN = xorDecrypt('EBAJLDp6VkADPEocNAd4YjoBNyAnfH5SJiFJMkZ1AnkADUpCMH1jWg==', 'wxysr315');
+            const ISSUES_API = 'https://api.github.com/repos/raoroger380/wxysr315/issues';
+
+            async function fetchMessages() {
+                try {
+                    const res = await fetch(`${ISSUES_API}?labels=message&state=open&per_page=50&sort=created&direction=desc`);
+                    if (!res.ok) throw new Error('Fetch failed');
+                    const issues = await res.json();
+                    return issues.map(issue => {
+                        const nameMatch = issue.body ? issue.body.match(/^name:(.*)$/m) : null;
+                        return {
+                            title: issue.title,
+                            name: nameMatch ? nameMatch[1].trim() : '',
+                            time: issue.created_at,
+                        };
+                    });
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            function displayMessages(messages) {
+                const container = document.getElementById('msgItems');
+                if (messages.length === 0) {
+                    container.innerHTML = '<div class="msg-empty">还没有祝福，快来留言吧 💬</div>';
+                    return;
+                }
+                container.innerHTML = messages.map(msg => {
+                    const nameHtml = msg.name ? `<div class="msg-item-name">${escapeHtml(msg.name)}</div>` : '';
+                    const timeStr = msg.time ? new Date(msg.time).toLocaleDateString('zh-CN') : '';
+                    return `
+                        <div class="msg-item">
+                            ${nameHtml}
+                            <div class="msg-item-text">${escapeHtml(msg.title)}</div>
+                            <div class="msg-item-time">${timeStr}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            function escapeHtml(str) {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            async function submitMessage(name, content) {
+                const title = name ? `${content} — ${name}` : content;
+                try {
+                    const res = await fetch(ISSUES_API, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `token ${GITHUB_TOKEN}`,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ title, body: name ? `name:${name}` : 'name:匿名', labels: ['message'] }),
+                    });
+                    if (!res.ok) throw new Error('Submit failed');
+                    showMsgToast('祝福已发送 ✨ 将出现在首页弹幕中');
+                    return true;
+                } catch (e) {
+                    showMsgToast('发送失败，请稍后再试');
+                    return false;
+                }
+            }
+
+            function showMsgToast(text) {
+                const existing = document.querySelector('.msg-toast');
+                if (existing) existing.remove();
+                const toast = document.createElement('div');
+                toast.className = 'msg-toast';
+                toast.textContent = text;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 2200);
+            }
+
+            function openMessageWall() {
+                document.getElementById('messageOverlay').classList.add('show');
+                loadAndDisplayMessages();
+            }
+            function closeMessageWall() {
+                document.getElementById('messageOverlay').classList.remove('show');
+            }
+
+            async function loadAndDisplayMessages() {
+                const msgs = await fetchMessages();
+                displayMessages(msgs);
+            }
+
+            document.getElementById('msgBtn').addEventListener('click', openMessageWall);
+            document.getElementById('msgClose').addEventListener('click', closeMessageWall);
+            document.getElementById('messageOverlay').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) closeMessageWall();
+            });
+            document.getElementById('msgSubmit').addEventListener('click', async () => {
+                const nameInput = document.getElementById('msgName');
+                const contentInput = document.getElementById('msgContent');
+                const name = nameInput.value.trim();
+                const content = contentInput.value.trim();
+                if (!content) {
+                    showMsgToast('请输入祝福内容');
+                    return;
+                }
+                const btn = document.getElementById('msgSubmit');
+                btn.disabled = true;
+                btn.textContent = '发送中...';
+                const ok = await submitMessage(name, content);
+                btn.disabled = false;
+                btn.textContent = '发送祝福 ✨';
+                if (ok) {
+                    contentInput.value = '';
+                    nameInput.value = '';
+                    await loadAndDisplayMessages();
+                }
+            });
+            // ---- 管理后台入口（隐藏） ----
+            document.getElementById('adminEntry').addEventListener('click', () => {
+                window.location.href = 'admin.html';
+            });
+
+        })();
+    </script>
+</body>
+</html>

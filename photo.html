@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>拍照留念 · 伍希彦生日</title>
+    <style>
+        :root {
+            --bg: #ece6e0;
+            --glass: rgba(255, 255, 255, 0.62);
+            --border: rgba(59, 130, 246, 0.12);
+            --accent: #3b82f6;
+            --accent2: #2563eb;
+            --text: #1e293b;
+            --muted: #64748b;
+            --radius: 14px;
+            --radius-lg: 20px;
+        }
+        * { box-sizing: border-box; }
+        html, body { min-height: 100%; margin: 0; }
+        body {
+            font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            color: var(--text);
+            background: var(--bg);
+        }
+        .page {
+            min-height: 100vh;
+            padding: 32px 20px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* ---- Header ---- */
+        .photo-header {
+            text-align: center;
+            position: relative;
+        }
+        .photo-header::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 3px;
+            border-radius: 2px;
+            background: var(--accent);
+            margin: 14px auto 0;
+            opacity: 0.3;
+        }
+        .photo-header h1 {
+            margin: 0;
+            color: var(--text);
+            font-weight: 500;
+            font-size: clamp(1.5rem, 4.5vw, 2rem);
+            letter-spacing: 3px;
+        }
+        .photo-header h1 span { color: var(--accent); }
+        .photo-header p {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        /* ---- Layout ---- */
+        .photo-layout {
+            width: min(960px, 100%);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.4fr;
+            gap: 20px;
+            align-items: start;
+        }
+        .photo-timeline, .photo-camera {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.06);
+        }
+
+        /* ---- Timeline ---- */
+        .photo-timeline {
+            padding: 20px 16px;
+        }
+        .tl-heading {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.88rem;
+            color: var(--text);
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(59,130,246,0.08);
+        }
+        .tl-heading::before {
+            content: '📷';
+            font-size: 1rem;
+        }
+        .tl-count {
+            margin-left: auto;
+            font-size: 0.75rem;
+            color: var(--muted);
+            opacity: 0.6;
+        }
+        .tl-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 480px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .tl-items::-webkit-scrollbar { width: 3px; }
+        .tl-items::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.15); border-radius: 3px; }
+        .tl-item {
+            display: grid;
+            grid-template-columns: 48px 1fr;
+            gap: 12px;
+            align-items: center;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.4);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .tl-item:hover {
+            background: rgba(255,255,255,0.65);
+            border-color: rgba(59,130,246,0.1);
+        }
+        .tl-item.active {
+            background: rgba(59,130,246,0.06);
+            border-color: rgba(59,130,246,0.25);
+        }
+        .tl-thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: rgba(59,130,246,0.06);
+            flex-shrink: 0;
+        }
+        .tl-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .tl-info { min-width: 0; }
+        .tl-title {
+            font-size: 0.85rem;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .tl-time {
+            font-size: 0.7rem;
+            color: var(--muted);
+            opacity: 0.6;
+            margin-top: 2px;
+        }
+        .tl-empty {
+            color: var(--muted);
+            text-align: center;
+            padding: 40px 16px;
+            font-size: 0.85rem;
+            line-height: 1.8;
+        }
+        .tl-empty::before {
+            content: '📸\A';
+            font-size: 1.6rem;
+            white-space: pre;
+        }
+
+        /* ---- Camera ---- */
+        .photo-camera {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .camera-stage {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: #d4cfc8;
+            border: 1px solid var(--border);
+        }
+        video, canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        video { transform: scaleX(-1); }
+        #photoCanvas, #photoPreviewCanvas { display: none; }
+        .photo-preview-area.show #photoPreviewCanvas { display: block; }
+
+        /* Camera overlay indicator */
+        .camera-stage::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 2px solid transparent;
+            border-radius: var(--radius);
+            pointer-events: none;
+            transition: border-color 0.3s;
+        }
+        .photo-preview-area.show ~ .camera-stage::after { border-color: rgba(59,130,246,0.15); }
+
+        /* ---- Note input ---- */
+        .photo-note {
+            position: relative;
+        }
+        .photo-note input {
+            width: 100%;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.5);
+            border-radius: 12px;
+            padding: 10px 14px 10px 36px;
+            color: var(--text);
+            font: inherit;
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color 0.25s, background 0.25s;
+        }
+        .photo-note input:focus {
+            border-color: var(--accent);
+            background: rgba(255,255,255,0.75);
+        }
+        .photo-note::before {
+            content: '✏️';
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* ---- Buttons ---- */
+        .photo-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .photo-btn {
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 10px 24px;
+            font: inherit;
+            font-size: 0.85rem;
+            color: var(--accent);
+            background: rgba(59,130,246,0.06);
+            cursor: pointer;
+            transition: all 0.25s;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .photo-btn:hover { background: rgba(59,130,246,0.1); }
+        .photo-btn-primary {
+            color: #fff;
+            border-color: transparent;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+        }
+        .photo-btn-primary:hover { box-shadow: 0 4px 16px rgba(59,130,246,0.25); transform: translateY(-1px); }
+        .photo-btn-success {
+            color: #fff;
+            border-color: transparent;
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        .photo-btn-success:hover { box-shadow: 0 4px 16px rgba(16,185,129,0.25); transform: translateY(-1px); }
+        .photo-btn-reject {
+            color: #64748b;
+            border-color: rgba(100,116,139,0.18);
+            background: rgba(100,116,139,0.06);
+        }
+        .photo-btn-reject:hover { background: rgba(100,116,139,0.1); }
+        .hidden { display: none !important; }
+
+        /* ---- Bottom bar ---- */
+        .photo-bottom-bar {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: auto;
+        }
+        .link-btn {
+            border: none;
+            border-radius: 999px;
+            padding: 10px 28px;
+            font: inherit;
+            font-size: 0.85rem;
+            color: var(--muted);
+            background: rgba(255,255,255,0.45);
+            cursor: pointer;
+            transition: all 0.25s;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(59,130,246,0.08);
+        }
+        .link-btn:hover {
+            background: rgba(255,255,255,0.7);
+            color: var(--accent);
+        }
+        .link-btn-primary {
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-color: transparent;
+        }
+        .link-btn-primary:hover {
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(59,130,246,0.2);
+            transform: translateY(-1px);
+        }
+
+        /* ---- Toast ---- */
+        .toast {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            padding: 14px 28px;
+            border-radius: 14px;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            font-size: 0.9rem;
+            animation: toastIn 0.3s ease;
+        }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.92); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 820px) {
+            .page { padding: 20px 14px 28px; gap: 16px; }
+            .photo-layout { grid-template-columns: 1fr; gap: 14px; }
+            .photo-timeline { order: 2; }
+            .photo-camera { order: 1; }
+            .tl-items { max-height: 320px; }
+        }
+        @media (max-width: 480px) {
+            .page { padding: 16px 12px 24px; }
+            .photo-camera { padding: 12px; }
+            .photo-timeline { padding: 16px 12px; }
+            .tl-item { padding: 8px 10px; grid-template-columns: 40px 1fr; gap: 10px; }
+            .tl-thumb { width: 40px; height: 40px; }
+            .photo-actions { gap: 8px; }
+            .photo-btn { padding: 9px 18px; font-size: 0.82rem; }
+            .link-btn { padding: 9px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <header class="photo-header">
+            <h1>拍照<span>留念</span></h1>
+            <p>用相机记录这一刻，照片会保存到时光轴</p>
+        </header>
+
+        <section class="photo-layout">
+            <aside class="photo-timeline">
+                <div class="tl-heading">
+                    时光轴
+                    <span class="tl-count" id="tlCount"></span>
+                </div>
+                <div id="tlItems" class="tl-items">
+                    <div class="tl-empty">加载中...</div>
+                </div>
+            </aside>
+
+            <section class="photo-camera">
+                <div class="camera-stage">
+                    <video id="photoVideo" autoplay playsinline></video>
+                    <canvas id="photoCanvas"></canvas>
+                    <div class="photo-preview-area" id="photoPreviewArea">
+                        <canvas id="photoPreviewCanvas"></canvas>
+                    </div>
+                </div>
+                <div class="photo-note">
+                    <input type="text" id="photoNote" placeholder="写个备注（选填）" maxlength="50">
+                </div>
+                <div class="photo-actions">
+                    <button class="photo-btn photo-btn-primary" id="photoCaptureBtn">📸 拍照</button>
+                    <button class="photo-btn photo-btn-reject hidden" id="photoRejectBtn">↩ 重拍</button>
+                    <button class="photo-btn photo-btn-success hidden" id="photoSaveBtn">✓ 保存</button>
+                </div>
+            </section>
+        </section>
+
+        <nav class="photo-bottom-bar">
+            <button class="link-btn link-btn-primary" id="photoEnterLink">进入惊喜 ✨</button>
+            <button class="link-btn" id="photoBackLink">← 返回首页</button>
+        </nav>
+    </main>
+
+    <script>
+        (function() {
+            function xorDecrypt(b64, key) {
+                const str = atob(b64);
+                let r = "";
+                for (let i = 0; i < str.length; i++) r += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+                return r;
+            }
+
+            const GITHUB_TOKEN = xorDecrypt("EBAJLDp6VkADPEocNAd4YjoBNyAnfH5SJiFJMkZ1AnkADUpCMH1jWg==", "wxysr315");
+            const ISSUES_API = "https://api.github.com/repos/raoroger380/wxysr315/issues";
+            const photoVideo = document.getElementById("photoVideo");
+            const photoCanvas = document.getElementById("photoCanvas");
+            const photoPreviewArea = document.getElementById("photoPreviewArea");
+            const photoPreviewCanvas = document.getElementById("photoPreviewCanvas");
+            const photoCaptureBtn = document.getElementById("photoCaptureBtn");
+            const photoRejectBtn = document.getElementById("photoRejectBtn");
+            const photoSaveBtn = document.getElementById("photoSaveBtn");
+            const photoNote = document.getElementById("photoNote");
+            const tlItems = document.getElementById("tlItems");
+            const tlCount = document.getElementById("tlCount");
+            let photoStream = null;
+            let capturedBlob = null;
+            let photoSaving = false;
+
+            function escapeHtml(str) {
+                const div = document.createElement("div");
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            function showToast(text) {
+                document.querySelector(".toast")?.remove();
+                const toast = document.createElement("div");
+                toast.className = "toast";
+                toast.textContent = text;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 2200);
+            }
+
+            async function startCamera() {
+                try {
+                    photoStream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: "user", width: { ideal: 960 }, height: { ideal: 720 } }
+                    });
+                    photoVideo.srcObject = photoStream;
+                    await photoVideo.play();
+                    resetCameraView();
+                } catch (e) {
+                    showToast("无法打开摄像头，请检查权限设置");
+                }
+            }
+
+            function stopCamera() {
+                if (photoStream) photoStream.getTracks().forEach(track => track.stop());
+                photoStream = null;
+                photoVideo.srcObject = null;
+            }
+
+            function resetCameraView() {
+                photoPreviewArea.classList.remove("show");
+                photoCanvas.style.display = "none";
+                photoVideo.style.display = "block";
+                photoCaptureBtn.classList.remove("hidden");
+                photoRejectBtn.classList.add("hidden");
+                photoSaveBtn.classList.add("hidden");
+                capturedBlob = null;
+            }
+
+            photoCaptureBtn.addEventListener("click", () => {
+                const vw = photoVideo.videoWidth;
+                const vh = photoVideo.videoHeight;
+                if (!vw || !vh) return;
+                photoCanvas.width = vw;
+                photoCanvas.height = vh;
+                const ctx = photoCanvas.getContext("2d");
+                ctx.translate(vw, 0);
+                ctx.scale(-1, 1);
+                ctx.drawImage(photoVideo, 0, 0, vw, vh);
+                photoCanvas.toBlob(blob => {
+                    capturedBlob = blob;
+                    const previewCtx = photoPreviewCanvas.getContext("2d");
+                    photoPreviewCanvas.width = vw;
+                    photoPreviewCanvas.height = vh;
+                    previewCtx.drawImage(photoCanvas, 0, 0, vw, vh);
+                    photoPreviewArea.classList.add("show");
+                    photoVideo.style.display = "none";
+                    photoCanvas.style.display = "block";
+                    photoCaptureBtn.classList.add("hidden");
+                    photoRejectBtn.classList.remove("hidden");
+                    photoSaveBtn.classList.remove("hidden");
+                }, "image/jpeg", 0.85);
+            });
+
+            photoRejectBtn.addEventListener("click", resetCameraView);
+
+            photoSaveBtn.addEventListener("click", async () => {
+                if (photoSaving || !capturedBlob) return;
+                photoSaving = true;
+                photoSaveBtn.disabled = true;
+                photoSaveBtn.textContent = "保存中...";
+                try {
+                    const b64 = await blobToBase64(capturedBlob);
+                    const note = photoNote.value.trim() || "生日留念";
+                    const timestamp = new Date().toISOString();
+                    const res = await fetch(ISSUES_API, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `token ${GITHUB_TOKEN}`,
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            title: `照片 ${note}`,
+                            body: `photo:true\ndate:${timestamp}\nimage:${b64}`,
+                            labels: ["photo"],
+                        }),
+                    });
+                    if (!res.ok) throw new Error("Save failed");
+                    showToast("照片已保存到时光轴 ✨");
+                    photoNote.value = "";
+                    resetCameraView();
+                    await loadPhotoTimeline();
+                } catch (e) {
+                    showToast("保存失败，请稍后再试");
+                } finally {
+                    photoSaving = false;
+                    photoSaveBtn.disabled = false;
+                    photoSaveBtn.textContent = "✓ 保存";
+                }
+            });
+
+            function blobToBase64(blob) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result.split(",")[1]);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            }
+
+            async function loadPhotoTimeline() {
+                try {
+                    const res = await fetch(`${ISSUES_API}?labels=photo&state=all&per_page=100&sort=created&direction=desc`);
+                    if (!res.ok) throw new Error("Fetch failed");
+                    renderTimeline(await res.json());
+                } catch (e) {
+                    tlItems.innerHTML = '<div class="tl-empty">加载失败</div>';
+                }
+            }
+
+            function renderTimeline(issues) {
+                const photos = issues.filter(issue => issue.state === "open");
+                tlCount.textContent = photos.length ? `${photos.length} 张` : '';
+                if (photos.length === 0) {
+                    tlItems.innerHTML = '<div class="tl-empty">还没有照片<br>拍下第一张吧</div>';
+                    return;
+                }
+                tlItems.innerHTML = photos.map((issue, idx) => {
+                    const note = issue.title.replace(/^照片\s*/, "");
+                    const body = issue.body || "";
+                    const dateMatch = body.match(/date:([^\n]+)/);
+                    const imgMatch = body.match(/image:([^\n]+)/);
+                    return `
+                        <div class="tl-item ${idx === 0 ? "active" : ""}" data-image="${imgMatch ? imgMatch[1] : ""}">
+                            <div class="tl-thumb">${imgMatch ? '<img src="data:image/jpeg;base64,' + imgMatch[1] + '" loading="lazy">' : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:1.2rem;">📷</div>'}</div>
+                            <div class="tl-info">
+                                <div class="tl-title">${escapeHtml(note)}</div>
+                                <div class="tl-time">${dateMatch ? formatTime(dateMatch[1]) : ""}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join("");
+                tlItems.querySelectorAll(".tl-item").forEach(item => {
+                    item.addEventListener("click", () => {
+                        tlItems.querySelectorAll(".tl-item").forEach(el => el.classList.remove("active"));
+                        item.classList.add("active");
+                        if (item.dataset.image) showTimelinePhoto(item.dataset.image);
+                    });
+                });
+                const first = tlItems.querySelector(".tl-item");
+                if (first?.dataset.image) showTimelinePhoto(first.dataset.image);
+            }
+
+            function showTimelinePhoto(b64) {
+                const img = new Image();
+                img.onload = () => {
+                    photoPreviewCanvas.width = img.naturalWidth;
+                    photoPreviewCanvas.height = img.naturalHeight;
+                    photoPreviewCanvas.getContext("2d").drawImage(img, 0, 0);
+                    photoPreviewArea.classList.add("show");
+                    photoVideo.style.display = "none";
+                    photoCanvas.style.display = "block";
+                    photoCaptureBtn.classList.add("hidden");
+                    photoRejectBtn.classList.add("hidden");
+                    photoSaveBtn.classList.add("hidden");
+                };
+                img.src = `data:image/jpeg;base64,${b64}`;
+            }
+
+            function formatTime(iso) {
+                const d = new Date(iso);
+                const month = String(d.getMonth() + 1).padStart(2, "0");
+                const day = String(d.getDate()).padStart(2, "0");
+                const hour = String(d.getHours()).padStart(2, "0");
+                const min = String(d.getMinutes()).padStart(2, "0");
+                return `${month}月${day}日 ${hour}:${min}`;
+            }
+
+            document.getElementById("photoEnterLink").addEventListener("click", () => {
+                window.location.href = "jingxi.html";
+            });
+            document.getElementById("photoBackLink").addEventListener("click", () => {
+                window.location.href = "index.html";
+            });
+            window.addEventListener("beforeunload", stopCamera);
+
+            loadPhotoTimeline();
+            startCamera();
+        })();
+    </script>
+</body>
+</html>
