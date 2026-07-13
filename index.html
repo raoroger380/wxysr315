@@ -737,6 +737,10 @@
             ];
             let dots = [];
             let ambientLightElements = [];
+            const photoParticleImage = new Image();
+            photoParticleImage.decoding = "async";
+            photoParticleImage.src = "data:image/jpeg;base64,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";
+            let photoParticleLoad;
 
             function getParticleCount() {
                 const area = window.innerWidth * window.innerHeight;
@@ -746,6 +750,16 @@
                 if (area < 420000) return 2400;
                 if (area < 920000) return 3200;
                 return 4000;
+            }
+
+            function getPhotoParticleCount() {
+                const area = window.innerWidth * window.innerHeight;
+                const cpu = navigator.hardwareConcurrency || 4;
+                const memory = navigator.deviceMemory || 4;
+                if (cpu <= 4 || memory <= 4) return area < 420000 ? 5000 : 6500;
+                if (area < 420000) return 8000;
+                if (area < 920000) return 10000;
+                return 12000;
             }
 
             function rebuildDots() {
@@ -758,8 +772,23 @@
                     vx: 0,
                     vy: 0,
                     a: 0.5 + Math.random() * 0.5,
-                    hue: 210 + Math.random() * 30
+                    hue: 210 + Math.random() * 30,
+                    radius: 1.8
                 }));
+            }
+
+            function expandDotsForPhoto() {
+                const targetCount = getPhotoParticleCount();
+                while (dots.length < targetCount) {
+                    dots.push({
+                        x: Math.random() * w, y: Math.random() * h,
+                        tx: Math.random() * w, ty: Math.random() * h,
+                        vx: 0, vy: 0,
+                        a: 0.5 + Math.random() * 0.5,
+                        hue: 210 + Math.random() * 30,
+                        radius: 1.8
+                    });
+                }
             }
 
             function nextFrame() {
@@ -917,6 +946,61 @@
                 offCtx.font = `800 ${sizePx*dpr}px ${fontFamily}`;
                 offCtx.fillText(text, cw/2, ch/2);
                 return collectTextPoints(offCtx, off);
+            }
+
+            function loadPhotoParticleImage() {
+                if (photoParticleImage.complete && photoParticleImage.naturalWidth) {
+                    return Promise.resolve(photoParticleImage);
+                }
+                if (!photoParticleLoad) {
+                    photoParticleLoad = new Promise((resolve, reject) => {
+                        photoParticleImage.onload = () => resolve(photoParticleImage);
+                        photoParticleImage.onerror = () => reject(new Error("照片加载失败"));
+                    });
+                }
+                return photoParticleLoad;
+            }
+
+            async function getPhotoParticlePoints() {
+                const image = await loadPhotoParticleImage();
+                const crop = { left: 0.02, top: 0.04, right: 0.98, bottom: 0.98 };
+                const imageRatio = (image.naturalWidth * (crop.right - crop.left)) /
+                    (image.naturalHeight * (crop.bottom - crop.top));
+                let displayWidth = Math.min(w * 0.94, h * imageRatio * 0.88);
+                let displayHeight = displayWidth / imageRatio;
+                if (displayHeight > h * 0.88) {
+                    displayHeight = h * 0.88;
+                    displayWidth = displayHeight * imageRatio;
+                }
+                const sampleCanvas = document.createElement("canvas");
+                const sampleWidth = Math.min(960, Math.round(displayWidth * dpr));
+                const sampleHeight = Math.round(sampleWidth / (image.naturalWidth / image.naturalHeight));
+                sampleCanvas.width = sampleWidth;
+                sampleCanvas.height = sampleHeight;
+                const sampleCtx = sampleCanvas.getContext("2d", { willReadFrequently: true });
+                sampleCtx.drawImage(image, 0, 0, sampleWidth, sampleHeight);
+                const pixels = sampleCtx.getImageData(0, 0, sampleWidth, sampleHeight).data;
+                const cropLeft = Math.floor(sampleWidth * crop.left);
+                const cropTop = Math.floor(sampleHeight * crop.top);
+                const cropRight = Math.ceil(sampleWidth * crop.right);
+                const cropBottom = Math.ceil(sampleHeight * crop.bottom);
+                const cropWidth = cropRight - cropLeft;
+                const cropHeight = cropBottom - cropTop;
+                const step = Math.max(3, Math.round(Math.sqrt((cropWidth * cropHeight) / dots.length)));
+                const left = (w - displayWidth) / 2;
+                const top = (h - displayHeight) / 2;
+                const pts = [];
+                for (let y = cropTop; y < cropBottom; y += step) {
+                    for (let x = cropLeft; x < cropRight; x += step) {
+                        const index = (y * sampleWidth + x) * 4;
+                        pts.push({
+                            x: left + ((x - cropLeft) / cropWidth) * displayWidth,
+                            y: top + ((y - cropTop) / cropHeight) * displayHeight,
+                            color: `rgba(${pixels[index]}, ${pixels[index + 1]}, ${pixels[index + 2]}, ${pixels[index + 3] / 255})`
+                        });
+                    }
+                }
+                return pts;
             }
 
             function escapeSvgText(text) {
@@ -1084,6 +1168,7 @@
             }
             function morphTo(text, maxSize, scatter=false) {
                 return new Promise(resolve => {
+                    dots.forEach(dot => { dot.color = null; dot.radius = 1.8; });
                     if (scatter) {
                         const targets = null; // 随机散开
                         for (let i = 0; i < dots.length; i++) {
@@ -1114,8 +1199,39 @@
                     }, scatter ? 1200 : 100);
                 });
             }
+            async function morphToPhoto() {
+                expandDotsForPhoto();
+                let pts = [];
+                try {
+                    pts = await getPhotoParticlePoints();
+                } catch (e) {
+                    await morphTo("Happy Birthday", 180, true);
+                    return;
+                }
+                if (!pts.length) {
+                    await morphTo("Happy Birthday", 180, true);
+                    return;
+                }
+                textFx.dataset.particleMode = "photo";
+                dots.forEach(dot => {
+                    dot.color = null;
+                    dot.radius = 1.8;
+                    dot.tx = Math.random() * w;
+                    dot.ty = Math.random() * h;
+                });
+                await sleep(500);
+                for (let i = 0; i < dots.length; i++) {
+                    const point = pts[Math.floor((i / dots.length) * pts.length)];
+                    dots[i].tx = point.x;
+                    dots[i].ty = point.y;
+                    dots[i].color = point.color;
+                    dots[i].radius = 3.2;
+                }
+                await sleep(4000);
+            }
             function morphToLine() {
                 return new Promise(resolve => {
+                    textFx.dataset.particleMode = "line";
                     const lineY = h*0.53;
                     const lineWidth = w * 0.85;
                     const leftX = (w - lineWidth) / 2;
@@ -1133,7 +1249,7 @@
                     }
                     const selected = [];
                     for (let i = 0; i < dots.length; i++) selected.push(shuffled[i % shuffled.length]);
-                    for (let i = 0; i < dots.length; i++) { dots[i].tx = selected[i].x; dots[i].ty = selected[i].y; }
+                    for (let i = 0; i < dots.length; i++) { dots[i].tx = selected[i].x; dots[i].ty = selected[i].y; dots[i].color = null; dots[i].radius = 1.8; }
                     setTimeout(resolve, 2000);
                 });
             }
@@ -1142,12 +1258,16 @@
             function renderTextFx() {
                 tCtx.clearRect(0,0,w,h);
                 if (textActive) {
+                    if (textFx.dataset.particleMode === "photo") {
+                        tCtx.fillStyle = "rgba(15, 23, 42, 0.34)";
+                        tCtx.fillRect(0, 0, w, h);
+                    }
                     for (const p of dots) {
                         const dx=p.tx-p.x, dy=p.ty-p.y;
                         p.vx+=dx*0.018; p.vy+=dy*0.018; p.vx*=0.84; p.vy*=0.84;
                         p.x+=p.vx; p.y+=p.vy;
-                        tCtx.fillStyle=`hsla(${p.hue}, 85%, 50%, ${p.a})`;
-                        tCtx.beginPath(); tCtx.arc(p.x,p.y,1.8,0,Math.PI*2); tCtx.fill();
+                        tCtx.fillStyle = p.color || `hsla(${p.hue}, 85%, 50%, ${p.a})`;
+                        tCtx.beginPath(); tCtx.arc(p.x,p.y,p.radius,0,Math.PI*2); tCtx.fill();
                     }
                 }
                 requestAnimationFrame(renderTextFx);
@@ -1450,8 +1570,7 @@
                 startDanmaku();
                 await morphTo("嗨，朋友", 220, false);
                 await morphTo(`${friendName}，生日快乐`, 180, true);
-                await morphTo("Happy Birthday", 180, true);
-                await sleep(800);
+                await morphToPhoto();
                 await morphToLine();
                 stopDanmaku();
                 document.getElementById('danmakuContainer').innerHTML = '';
