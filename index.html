@@ -1075,54 +1075,6 @@
                 }
                 return pts;
             }
-
-                // 2. 发车格 / 起跑线（直线段）
-                const sl = rx * 1.2;
-                for (let i = 0; i < parts[1]; i++) {
-                    const t = i / parts[1];
-                    pts.push({x: cx + (t - 0.5) * sl, y: cy - ry * 0.85});
-                }
-
-                // 3. 方格旗（棋盘格图案，分布在赛道两侧）
-                const cSize = Math.min(rx, ry) * 0.12;
-                const flagCols = 8, flagRows = 4;
-                const flagW = cSize * flagCols, flagH = cSize * flagRows;
-                const fLeft = cx - flagW/2, fTop = cy + ry * 0.55;
-                for (let i = 0; i < parts[2]; i++) {
-                    const idx = Math.floor(Math.random() * flagCols * flagRows);
-                    const col = idx % flagCols, row = Math.floor(idx / flagCols);
-                    const xOff = (Math.random() - 0.5) * cSize * 0.8;
-                    const yOff = (Math.random() - 0.5) * cSize * 0.8;
-                    pts.push({x: fLeft + (col + 0.5) * cSize + xOff, y: fTop + (row + 0.5) * cSize + yOff});
-                }
-
-                // 4. 赛道弯道提示（内外侧弧线标记）
-                const corners = [
-                    {ax: cx - rx*0.7, ay: cy - ry*0.2, r: ry*0.25, start: -0.8, end: 2.0},
-                    {ax: cx + rx*0.7, ay: cy + ry*0.2, r: ry*0.25, start: -1.2, end: 1.8},
-                ];
-                const perCorner = Math.floor(parts[3] / corners.length);
-                for (let ci = 0; ci < corners.length; ci++) {
-                    const c = corners[ci];
-                    for (let i = 0; i < perCorner; i++) {
-                        const t = i / perCorner;
-                        const a = c.start + t * (c.end - c.start);
-                        pts.push({x: c.ax + Math.cos(a) * c.r, y: c.ay + Math.sin(a) * c.r});
-                    }
-                }
-                // 补全剩余
-                for (let i = perCorner * corners.length; i < parts[3]; i++) {
-                    const a = Math.random() * 2 * Math.PI;
-                    pts.push({x: cx + Math.cos(a) * rx * 0.3, y: cy + Math.sin(a) * ry * 0.3});
-                }
-
-                // 打乱顺序
-                for (let i = pts.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [pts[i], pts[j]] = [pts[j], pts[i]];
-                }
-                return pts;
-            }
             function morphTo(text, maxSize, scatter=false) {
                 return new Promise(resolve => {
                     if (scatter) {
