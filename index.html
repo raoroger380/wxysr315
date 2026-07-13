@@ -989,93 +989,90 @@
                 }
                 return { pts: bestPts, size: bestSize };
             }
-            // ---- F1标志粒子形状 ----
+            // ---- F1标志粒子形状 (Canvas渲染) ----
             function getF1TrackPoints(w, h, count) {
-                const pts = [];
-                const cx = w / 2, cy = h / 2;
                 const scale = Math.min(w, h) / 140;
+                const cw = w * dpr, ch = h * dpr;
+                const cx = cw / 2, cy = ch / 2;
 
-                const parts = [
-                    Math.floor(count * 0.52),
-                    Math.floor(count * 0.32),
-                    Math.floor(count * 0.16),
-                ];
-                let total = parts.reduce((a,b)=>a+b, 0);
-                parts[0] += count - total;
+                // 设置 off canvas 尺寸
+                off.width = cw;
+                off.height = ch;
+                offCtx.setTransform(1, 0, 0, 1, 0, 0);
+                offCtx.clearRect(0, 0, cw, ch);
+                offCtx.fillStyle = '#ffffff';
 
-                // === 1. 数字 "1" (官方F1标志核心) ===
-                const stemW = 9 * scale;          // 竖体宽度
-                const stemL = cx - stemW/2;
-                const stemH = 46 * scale;         // 竖体高度
-                const stemTop = cy - stemH/2;
-                const stemBot = cy + stemH/2;
-                const serifH = 13 * scale;        // 顶部衬线高度
-                const serifW = 26 * scale;        // 顶部衬线宽度(向左延伸)
-                const serifL = cx - serifW * 0.65;
-                const footW = 15 * scale;         // 底部小衬线
-                const footH = 6 * scale;
-                const footL = cx - footW * 0.55;
+                // ---- 绘制 "1" 形状（F1标志核心）----
+                const stemW = 11 * scale * dpr;
+                const stemH = 48 * scale * dpr;
+                const stemL = cx - stemW / 2;
+                const stemT = cy - stemH / 2;
 
-                for (let i = 0; i < parts[0]; i++) {
-                    const t = i / parts[0];
-                    if (t < 0.48) {
-                        // 竖体 (48%)
-                        const x = stemL + Math.random() * stemW;
-                        const y = stemTop + serifH + Math.random() * (stemH - serifH - footH);
-                        pts.push({x, y});
-                    } else if (t < 0.78) {
-                        // 顶部衬线 - 水平向左延伸 (30%)
-                        const x = serifL + Math.random() * serifW;
-                        // 顶部向上倾斜
-                        const y = stemTop + (x - serifL) * 0.06 + Math.random() * serifH;
-                        pts.push({x, y});
-                    } else {
-                        // 底部衬线 (22%)
-                        const x = footL + Math.random() * footW;
-                        const y = stemBot - Math.random() * footH;
-                        pts.push({x, y});
-                    }
-                }
+                // 竖体
+                offCtx.fillRect(stemL, stemT + 12 * scale * dpr, stemW, stemH - 12 * scale * dpr - 6 * scale * dpr);
 
-                // === 2. 右侧经典斜条纹 (官方F1标志最显著特征) ===
-                // 条纹位于"1"的右侧，向右下方倾斜约18度
-                const stripeBaseX = cx + stemW * 0.6;
+                // 顶部衬线（向左延伸）
+                const serifH = 12 * scale * dpr;
+                const serifW = 28 * scale * dpr;
+                offCtx.beginPath();
+                offCtx.moveTo(cx - serifW * 0.6, stemT);
+                offCtx.lineTo(cx + serifW * 0.4, stemT);
+                offCtx.lineTo(cx + serifW * 0.35, stemT + serifH);
+                offCtx.lineTo(cx - serifW * 0.55, stemT + serifH);
+                offCtx.closePath();
+                offCtx.fill();
+
+                // 底部衬线
+                const footH = 6 * scale * dpr;
+                const footW = 16 * scale * dpr;
+                offCtx.fillRect(cx - footW * 0.55, stemT + stemH - footH, footW, footH);
+
+                // ---- 绘制右侧斜条纹 ----
+                offCtx.save();
                 const stripeCount = 6;
-                const stripeW = 3.5 * scale;
-                const stripeGap = 3 * scale;
-                const stripeLen = 42 * scale;
+                const stripeW = 3.5 * scale * dpr;
+                const stripeGap = 3 * scale * dpr;
+                const stripeBaseX = cx + stemW * 0.55;
+                const stripeLen = 44 * scale * dpr;
+                for (let i = 0; i < stripeCount; i++) {
+                    const topX = stripeBaseX + i * (stripeW + stripeGap);
+                    offCtx.translate(topX, cy - stripeLen / 2);
+                    offCtx.rotate(0.26); // 15度
+                    offCtx.fillRect(0, 0, stripeW, stripeLen);
+                    offCtx.setTransform(1, 0, 0, 1, 0, 0);
+                }
+                offCtx.restore();
 
-                for (let i = 0; i < parts[1]; i++) {
-                    const si = Math.floor(Math.random() * stripeCount);
-                    const topX = stripeBaseX + si * (stripeW + stripeGap);
-                    const y0 = (Math.random() - 0.5) * stripeLen;
-                    // 底部向右偏移(倾斜效果)
-                    const botX = topX + y0 * 0.25;
-                    const x = topX + (botX - topX) * Math.random();
-                    const y = cy - stripeLen/2 + y0 + (y0 < 0 ? stripeLen : 0) * 0.5 + Math.random() * stripeLen * 0.3;
-                    if (Math.random() < 0.7) {
-                        // 密集条纹
-                        pts.push({x: x + Math.random() * stripeW, y: y});
-                    } else {
-                        pts.push({x: x + 0.3 * stripeW, y: y + (Math.random()-0.5)*3*scale});
+                // ---- 采集像素点 ----
+                const allPts = [];
+                const step = Math.max(1, Math.floor(Math.min(w, h) / 200)) * dpr;
+                const img = offCtx.getImageData(0, 0, cw, ch).data;
+                for (let y = 0; y < ch; y += step) {
+                    for (let x = 0; x < cw; x += step) {
+                        if (img[(y * cw + x) * 4 + 3] > 140) {
+                            allPts.push({x: x / dpr, y: y / dpr});
+                        }
                     }
                 }
 
-                // === 3. 左侧细装饰条 ===
-                const lStripeBaseX = cx - stemW * 0.7;
-                const lStripeCount = 4;
-                const lStripeW = 2.5 * scale;
-                const lStripeGap = 2 * scale;
-                const lStripeLen = 30 * scale;
-
-                for (let i = 0; i < parts[2]; i++) {
-                    const si = Math.floor(Math.random() * lStripeCount);
-                    const topX = lStripeBaseX - si * (lStripeW + lStripeGap);
-                    const yOff = (Math.random() - 0.5) * lStripeLen * 0.7;
-                    const slant = yOff * 0.2;
-                    const x = topX + slant + Math.random() * lStripeW;
-                    const y = cy + yOff * 0.5;
-                    pts.push({x, y});
+                // 选出 count 个点
+                const pts = [];
+                if (allPts.length >= count) {
+                    // 均匀采样
+                    for (let i = 0; i < count; i++) {
+                        const idx = Math.floor(i * allPts.length / count);
+                        pts.push(allPts[idx]);
+                    }
+                } else if (allPts.length > 0) {
+                    // 循环复制
+                    for (let i = 0; i < count; i++) {
+                        pts.push(allPts[i % allPts.length]);
+                    }
+                } else {
+                    // fallback: 随机
+                    for (let i = 0; i < count; i++) {
+                        pts.push({x: Math.random() * w, y: Math.random() * h});
+                    }
                 }
 
                 // 打乱顺序
