@@ -989,97 +989,134 @@
                 }
                 return { pts: bestPts, size: bestSize };
             }
-            // ---- 足球场粒子形状 ----
-            function getFootballFieldPoints(w, h, count) {
+            // ---- F1标志粒子形状 ----
+            function getF1TrackPoints(w, h, count) {
                 const pts = [];
-                const ratio = 1.54;
-                let fw, fh;
-                if (w / h > ratio) { fh = h; fw = fh * ratio; }
-                else { fw = w; fh = fw / ratio; }
-                const lx = (w - fw) / 2, rx = lx + fw;
-                const ty = (h - fh) / 2, by = ty + fh;
                 const cx = w / 2, cy = h / 2;
-                const cr = fw * 0.10;
+                const s = Math.min(w, h);
 
-                // 按比例分配粒子到各特征
+                // 按比例分配
                 const parts = [
-                    Math.floor(count * 0.30),
-                    Math.floor(count * 0.10),
+                    Math.floor(count * 0.40),
+                    Math.floor(count * 0.25),
                     Math.floor(count * 0.15),
                     Math.floor(count * 0.20),
-                    Math.floor(count * 0.10),
-                    Math.floor(count * 0.15),
                 ];
-                let total = parts.reduce((a,b)=>a+b,0);
+                let total = parts.reduce((a,b)=>a+b, 0);
                 parts[0] += count - total;
 
-                // 1. 外框
-                const pl = 2 * (fw + fh);
+                // 1. 数字 "1" 的粗体形状（F1标志核心）
+                const bw = s * 0.22, bh = s * 0.55;
+                const left1 = cx - bw/2, right1 = cx + bw/2;
+                const top1 = cy - bh/2, bot1 = cy + bh/2;
+                // 1 的顶部横线（向右上倾斜）
+                const hookW = bw * 0.8, hookH = bh * 0.15;
                 for (let i = 0; i < parts[0]; i++) {
                     const t = i / parts[0];
-                    const d = t * pl;
-                    if (d < fw)           { pts.push({x: lx+d, y: ty}); }
-                    else if (d < fw+fh)   { pts.push({x: rx, y: ty+(d-fw)}); }
-                    else if (d < 2*fw+fh) { pts.push({x: rx-(d-fw-fh), y: by}); }
-                    else                  { pts.push({x: lx, y: by-(d-2*fw-fh)}); }
+                    // 在哪部分：0=竖体, 1=顶部横
+                    if (t < 0.65) {
+                        // 竖体
+                        const tt = t / 0.65;
+                        const x = left1 + tt * bw;
+                        const y = top1 + hookH + Math.random() * (bh - hookH);
+                        pts.push({x, y});
+                    } else {
+                        // 顶部向右上倾斜的横
+                        const tt = (t - 0.65) / 0.35;
+                        const x = left1 + tt * bw * 1.1;
+                        const y = top1 + (1 - tt) * hookH;
+                        pts.push({x, y});
+                    }
                 }
 
-                // 2. 中场线
+                // 2. F1标志右侧的红色斜条纹
+                const stripCount = 5;
+                const stripW = s * 0.06;
+                const stripH = s * 0.5;
+                const stripLeft = cx + bw * 0.5;
+                for (let i = 0; i < parts[1]; i++) {
+                    const si = i % stripCount;
+                    const ti = i / parts[1];
+                    const baseX = stripLeft + si * stripW * 1.4;
+                    const yOff = (Math.random() - 0.5) * stripH;
+                    // 倾斜
+                    const slant = yOff * 0.15;
+                    pts.push({x: baseX + slant + Math.random() * stripW * 0.8, y: cy + yOff});
+                }
+
+                // 3. F1标志左侧的黑色斜条纹
+                const lStripW = s * 0.05;
+                const lStripLeft = cx - bw * 0.8;
+                for (let i = 0; i < parts[2]; i++) {
+                    const si = i % 4;
+                    const baseX = lStripLeft - si * lStripW * 1.3;
+                    const yOff = (Math.random() - 0.5) * s * 0.35;
+                    const slant = yOff * 0.12;
+                    pts.push({x: baseX + slant + Math.random() * lStripW * 0.7, y: cy + yOff});
+                }
+
+                // 4. 方格旗小元素（右下点缀）
+                const cSize = s * 0.04;
+                const fCols = 5, fRows = 3;
+                const fW = cSize * fCols, fH = cSize * fRows;
+                const fLeft = cx + s * 0.25, fTop = cy + s * 0.2;
+                for (let i = 0; i < parts[3]; i++) {
+                    const idx = Math.floor(Math.random() * fCols * fRows);
+                    const col = idx % fCols, row = Math.floor(idx / fCols);
+                    const xOff = (Math.random() - 0.5) * cSize * 0.7;
+                    const yOff = (Math.random() - 0.5) * cSize * 0.7;
+                    pts.push({x: fLeft + (col + 0.5) * cSize + xOff, y: fTop + (row + 0.5) * cSize + yOff});
+                }
+
+                // 打乱顺序
+                for (let i = pts.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [pts[i], pts[j]] = [pts[j], pts[i]];
+                }
+                return pts;
+            }
+
+                // 2. 发车格 / 起跑线（直线段）
+                const sl = rx * 1.2;
                 for (let i = 0; i < parts[1]; i++) {
                     const t = i / parts[1];
-                    pts.push({x: lx + t*fw, y: cy});
+                    pts.push({x: cx + (t - 0.5) * sl, y: cy - ry * 0.85});
                 }
 
-                // 3. 中圈
+                // 3. 方格旗（棋盘格图案，分布在赛道两侧）
+                const cSize = Math.min(rx, ry) * 0.12;
+                const flagCols = 8, flagRows = 4;
+                const flagW = cSize * flagCols, flagH = cSize * flagRows;
+                const fLeft = cx - flagW/2, fTop = cy + ry * 0.55;
                 for (let i = 0; i < parts[2]; i++) {
-                    const a = (i / parts[2]) * 2 * Math.PI;
-                    pts.push({x: cx + Math.cos(a)*cr, y: cy + Math.sin(a)*cr});
+                    const idx = Math.floor(Math.random() * flagCols * flagRows);
+                    const col = idx % flagCols, row = Math.floor(idx / flagCols);
+                    const xOff = (Math.random() - 0.5) * cSize * 0.8;
+                    const yOff = (Math.random() - 0.5) * cSize * 0.8;
+                    pts.push({x: fLeft + (col + 0.5) * cSize + xOff, y: fTop + (row + 0.5) * cSize + yOff});
                 }
 
-                // 4. 禁区 (左右各半)
-                const pw = fw * 0.22, ph = fh * 0.44;
-                const ptop = cy - ph/2, pbot = cy + ph/2;
-                for (let side = 0; side < 2; side++) {
-                    const n = Math.floor(parts[3] / 2);
-                    const baseX = side === 0 ? lx : rx - pw;
-                    for (let i = 0; i < n; i++) {
-                        const t = i / n;
-                        const d = t * 2 * (pw + ph);
-                        if (d < pw)           { pts.push({x: baseX+d, y: ptop}); }
-                        else if (d < pw+ph)   { pts.push({x: baseX+pw, y: ptop+(d-pw)}); }
-                        else if (d < 2*pw+ph) { pts.push({x: baseX+pw-(d-pw-ph), y: pbot}); }
-                        else                  { pts.push({x: baseX, y: pbot-(d-2*pw-ph)}); }
+                // 4. 赛道弯道提示（内外侧弧线标记）
+                const corners = [
+                    {ax: cx - rx*0.7, ay: cy - ry*0.2, r: ry*0.25, start: -0.8, end: 2.0},
+                    {ax: cx + rx*0.7, ay: cy + ry*0.2, r: ry*0.25, start: -1.2, end: 1.8},
+                ];
+                const perCorner = Math.floor(parts[3] / corners.length);
+                for (let ci = 0; ci < corners.length; ci++) {
+                    const c = corners[ci];
+                    for (let i = 0; i < perCorner; i++) {
+                        const t = i / perCorner;
+                        const a = c.start + t * (c.end - c.start);
+                        pts.push({x: c.ax + Math.cos(a) * c.r, y: c.ay + Math.sin(a) * c.r});
                     }
                 }
-
-                // 5. 小禁区 (左右各半)
-                const gw = fw * 0.08, gh = fh * 0.22;
-                const gtop = cy - gh/2, gbot = cy + gh/2;
-                for (let side = 0; side < 2; side++) {
-                    const n = Math.floor(parts[4] / 2);
-                    const baseX = side === 0 ? lx : rx - gw;
-                    for (let i = 0; i < n; i++) {
-                        const t = i / n;
-                        const d = t * 2 * (gw + gh);
-                        if (d < gw)           { pts.push({x: baseX+d, y: gtop}); }
-                        else if (d < gw+gh)   { pts.push({x: baseX+gw, y: gtop+(d-gw)}); }
-                        else if (d < 2*gw+gh) { pts.push({x: baseX+gw-(d-gw-gh), y: gbot}); }
-                        else                  { pts.push({x: baseX, y: gbot-(d-2*gw-gh)}); }
-                    }
+                // 补全剩余
+                for (let i = perCorner * corners.length; i < parts[3]; i++) {
+                    const a = Math.random() * 2 * Math.PI;
+                    pts.push({x: cx + Math.cos(a) * rx * 0.3, y: cy + Math.sin(a) * ry * 0.3});
                 }
 
-                // 6. 禁区弧 (左右各半圆)
-                const arcR = fw * 0.08;
-                for (let side = 0; side < 2; side++) {
-                    const n = Math.floor(parts[5] / 2);
-                    const arcCx = side === 0 ? lx + pw : rx - pw;
-                    for (let i = 0; i < n; i++) {
-                        const a = Math.PI * (side === 0 ? -0.5 : 0.5) + (i / n) * Math.PI;
-                        pts.push({x: arcCx + Math.cos(a)*arcR, y: cy + Math.sin(a)*arcR});
-                    }
-                }
-
-                // 打乱顺序让过渡更自然
+                // 打乱顺序
                 for (let i = pts.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [pts[i], pts[j]] = [pts[j], pts[i]];
@@ -1089,7 +1126,7 @@
             function morphTo(text, maxSize, scatter=false) {
                 return new Promise(resolve => {
                     if (scatter) {
-                        const targets = scatter === 'football' ? getFootballFieldPoints(w, h, dots.length) : null;
+                        const targets = scatter === 'f1track' ? getF1TrackPoints(w, h, dots.length) : null;
                         for (let i = 0; i < dots.length; i++) {
                             if (targets) { dots[i].tx = targets[i].x; dots[i].ty = targets[i].y; }
                             else { dots[i].tx = Math.random()*w; dots[i].ty = Math.random()*h; }
@@ -1115,7 +1152,7 @@
                         } else { selected = dots.map(d=>({x:d.tx, y:d.ty})); }
                         for (let i=0;i<dots.length;i++) { dots[i].tx = selected[i].x; dots[i].ty = selected[i].y; }
                         setTimeout(resolve, 2200);
-                    }, scatter === 'football' ? 2500 : scatter ? 900 : 100);
+                    }, scatter === 'f1track' ? 2500 : scatter ? 900 : 100);
                 });
             }
             function morphToLine() {
@@ -1453,7 +1490,7 @@
                 await loadDanmakuMessages();
                 startDanmaku();
                 await morphTo("嗨，朋友", 220, false);
-                await morphTo(`${friendName}，生日快乐`, 180, `football`);
+                await morphTo(`${friendName}，生日快乐`, 180, `f1track`);
                 await morphTo("Happy Birthday", 180, true);
                 await sleep(800);
                 await morphToLine();
