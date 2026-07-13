@@ -1085,7 +1085,7 @@
             function morphTo(text, maxSize, scatter=false) {
                 return new Promise(resolve => {
                     if (scatter) {
-                        const targets = scatter === 'f1track' ? getF1TrackPoints(w, h, dots.length) : null;
+                        const targets = null; // 随机散开
                         for (let i = 0; i < dots.length; i++) {
                             if (targets) { dots[i].tx = targets[i].x; dots[i].ty = targets[i].y; }
                             else { dots[i].tx = Math.random()*w; dots[i].ty = Math.random()*h; }
@@ -1111,7 +1111,7 @@
                         } else { selected = dots.map(d=>({x:d.tx, y:d.ty})); }
                         for (let i=0;i<dots.length;i++) { dots[i].tx = selected[i].x; dots[i].ty = selected[i].y; }
                         setTimeout(resolve, 2200);
-                    }, scatter === 'f1track' ? 2500 : scatter ? 900 : 100);
+                    }, scatter ? 1200 : 100);
                 });
             }
             function morphToLine() {
@@ -1449,7 +1449,7 @@
                 await loadDanmakuMessages();
                 startDanmaku();
                 await morphTo("嗨，朋友", 220, false);
-                await morphTo(`${friendName}，生日快乐`, 180, `f1track`);
+                await morphTo(`${friendName}，生日快乐`, 180, true);
                 await morphTo("Happy Birthday", 180, true);
                 await sleep(800);
                 await morphToLine();
