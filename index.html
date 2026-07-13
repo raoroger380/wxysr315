@@ -995,77 +995,72 @@
                 const cx = w / 2, cy = h / 2;
                 const s = Math.min(w, h);
 
-                // 按比例分配
                 const parts = [
-                    Math.floor(count * 0.40),
-                    Math.floor(count * 0.25),
-                    Math.floor(count * 0.15),
+                    Math.floor(count * 0.50),
+                    Math.floor(count * 0.30),
                     Math.floor(count * 0.20),
                 ];
                 let total = parts.reduce((a,b)=>a+b, 0);
                 parts[0] += count - total;
 
-                // 1. 数字 "1" 的粗体形状（F1标志核心）
-                const bw = s * 0.22, bh = s * 0.55;
-                const left1 = cx - bw/2, right1 = cx + bw/2;
-                const top1 = cy - bh/2, bot1 = cy + bh/2;
-                // 1 的顶部横线（向右上倾斜）
-                const hookW = bw * 0.8, hookH = bh * 0.15;
+                // ---- 1. 粗体数字 "1" (F1核心) ----
+                const scale = s / 120;
+                const barW = 10 * scale;       // 竖体宽度
+                const barH = 48 * scale;       // 竖体高度
+                const stemL = cx - barW/2;
+                const barTop = cy - barH/2;
+                const barBot = cy + barH/2;
+
                 for (let i = 0; i < parts[0]; i++) {
                     const t = i / parts[0];
-                    // 在哪部分：0=竖体, 1=顶部横
-                    if (t < 0.65) {
+                    if (t < 0.55) {
                         // 竖体
-                        const tt = t / 0.65;
-                        const x = left1 + tt * bw;
-                        const y = top1 + hookH + Math.random() * (bh - hookH);
+                        const x = stemL + Math.random() * barW;
+                        const y = barTop + 14 * scale + Math.random() * (barH - 14 * scale);
+                        pts.push({x, y});
+                    } else if (t < 0.80) {
+                        // 顶部宽横（向左延伸，F1标志特征）
+                        const topW = 24 * scale;
+                        const topH = 14 * scale;
+                        const x = cx - topW/2 + Math.random() * topW;
+                        const y = barTop + Math.random() * topH;
                         pts.push({x, y});
                     } else {
-                        // 顶部向右上倾斜的横
-                        const tt = (t - 0.65) / 0.35;
-                        const x = left1 + tt * bw * 1.1;
-                        const y = top1 + (1 - tt) * hookH;
+                        // 底部小横
+                        const botW = 16 * scale;
+                        const botH = 8 * scale;
+                        const x = cx - botW/2 + Math.random() * botW;
+                        const y = barBot - Math.random() * botH;
                         pts.push({x, y});
                     }
                 }
 
-                // 2. F1标志右侧的红色斜条纹
-                const stripCount = 5;
-                const stripW = s * 0.06;
-                const stripH = s * 0.5;
-                const stripLeft = cx + bw * 0.5;
+                // ---- 2. 右侧经典的F1斜条纹 ----
+                const stripStartX = cx + 12 * scale;
                 for (let i = 0; i < parts[1]; i++) {
-                    const si = i % stripCount;
-                    const ti = i / parts[1];
-                    const baseX = stripLeft + si * stripW * 1.4;
-                    const yOff = (Math.random() - 0.5) * stripH;
-                    // 倾斜
-                    const slant = yOff * 0.15;
-                    pts.push({x: baseX + slant + Math.random() * stripW * 0.8, y: cy + yOff});
+                    const idx = i % 5;
+                    const stripW = 4 * scale;
+                    const gap = 3 * scale;
+                    const baseX = stripStartX + idx * (stripW + gap);
+                    const yOff = (Math.random() - 0.5) * 40 * scale;
+                    const slant = yOff * 0.28;
+                    const x = baseX + slant + (Math.random() - 0.5) * stripW;
+                    const y = cy + yOff;
+                    pts.push({x, y});
                 }
 
-                // 3. F1标志左侧的黑色斜条纹
-                const lStripW = s * 0.05;
-                const lStripLeft = cx - bw * 0.8;
+                // ---- 3. 左侧黑色斜条纹 ----
+                const lStripStartX = cx - 14 * scale;
                 for (let i = 0; i < parts[2]; i++) {
-                    const si = i % 4;
-                    const baseX = lStripLeft - si * lStripW * 1.3;
-                    const yOff = (Math.random() - 0.5) * s * 0.35;
-                    const slant = yOff * 0.12;
-                    pts.push({x: baseX + slant + Math.random() * lStripW * 0.7, y: cy + yOff});
-                }
-
-                // 4. 方格旗小元素（右下点缀）
-                const cSize = s * 0.04;
-                const fCols = 5, fRows = 3;
-                const fW = cSize * fCols, fH = cSize * fRows;
-                const fLeft = cx + s * 0.25, fTop = cy + s * 0.2;
-                for (let i = 0; i < parts[3]; i++) {
-                    const idx = Math.floor(Math.random() * fCols * fRows);
-                    const col = idx % fCols, row = Math.floor(idx / fCols);
-                    const xOff = (Math.random() - 0.5) * cSize * 0.7;
-                    const yOff = (Math.random() - 0.5) * cSize * 0.7;
-                    pts.push({x: fLeft + (col + 0.5) * cSize + xOff, y: fTop + (row + 0.5) * cSize + yOff});
+                    const idx = i % 4;
+                    const stripW = 3 * scale;
+                    const gap = 2 * scale;
+                    const baseX = lStripStartX - idx * (stripW + gap);
+                    const yOff = (Math.random() - 0.5) * 28 * scale;
+                    const slant = yOff * 0.22;
+                    const x = baseX + slant + (Math.random() - 0.5) * stripW;
+                    const y = cy + yOff;
+                    pts.push({x, y});
                 }
 
                 // 打乱顺序
@@ -1527,7 +1522,7 @@
                 return r;
             }
             // ---- 测试入口 ----
-            const PASSWORD = xorDecrypt('QEpNQ0MC', 'wxysr315');
+            const PASSWORD = xorDecrypt('RElMQ0MC', 'wxysr315');
             document.getElementById('cdEntry').addEventListener('click', () => {
                 if (Date.now() >= getNextBirthday()) {
                     enterCelebration();
