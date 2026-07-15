@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -6,15 +6,22 @@
     <title>拍照留念 · 伍希彦生日</title>
     <style>
         :root {
+            --accent-rgb: 59, 130, 246;
             --bg: #ece6e0;
             --glass: rgba(255, 255, 255, 0.62);
-            --border: rgba(59, 130, 246, 0.12);
+            --border: rgba(var(--accent-rgb), 0.12);
             --accent: #3b82f6;
-            --accent2: #2563eb;
+            --accent2: var(--grad-end-dark);
             --text: #1e293b;
             --muted: #64748b;
             --radius: 14px;
             --radius-lg: 20px;
+            --text-muted: #475569;
+            --switch-bg: rgba(255,255,255,0.65);
+            --switch-border: rgba(0,0,0,0.08);
+            --switch-shadow: rgba(0,0,0,0.06);
+            --grad-end-light: #60a5fa;
+            --grad-end-dark: #2563eb;
         }
         * { box-sizing: border-box; }
         html, body { min-height: 100%; margin: 0; }
@@ -75,7 +82,7 @@
             border-radius: var(--radius-lg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.06);
+            box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.06);
         }
 
         /* ---- Timeline ---- */
@@ -91,7 +98,7 @@
             letter-spacing: 1px;
             margin-bottom: 14px;
             padding-bottom: 12px;
-            border-bottom: 1px solid rgba(59,130,246,0.08);
+            border-bottom: 1px solid rgba(var(--accent-rgb),0.08);
         }
         .tl-heading::before {
             content: '📷';
@@ -112,7 +119,7 @@
             padding-right: 4px;
         }
         .tl-items::-webkit-scrollbar { width: 3px; }
-        .tl-items::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.15); border-radius: 3px; }
+        .tl-items::-webkit-scrollbar-thumb { background: rgba(var(--accent-rgb),0.15); border-radius: 3px; }
         .tl-item {
             display: grid;
             grid-template-columns: 48px 1fr;
@@ -127,18 +134,18 @@
         }
         .tl-item:hover {
             background: rgba(255,255,255,0.65);
-            border-color: rgba(59,130,246,0.1);
+            border-color: rgba(var(--accent-rgb),0.1);
         }
         .tl-item.active {
-            background: rgba(59,130,246,0.06);
-            border-color: rgba(59,130,246,0.25);
+            background: rgba(var(--accent-rgb),0.06);
+            border-color: rgba(var(--accent-rgb),0.25);
         }
         .tl-thumb {
             width: 48px;
             height: 48px;
             border-radius: 10px;
             overflow: hidden;
-            background: rgba(59,130,246,0.06);
+            background: rgba(var(--accent-rgb),0.06);
             flex-shrink: 0;
         }
         .tl-thumb img {
@@ -211,7 +218,7 @@
             pointer-events: none;
             transition: border-color 0.3s;
         }
-        .photo-preview-area.show ~ .camera-stage::after { border-color: rgba(59,130,246,0.15); }
+        .photo-preview-area.show ~ .camera-stage::after { border-color: rgba(var(--accent-rgb),0.15); }
 
         /* ---- Note input ---- */
         .photo-note {
@@ -257,19 +264,19 @@
             font: inherit;
             font-size: 0.85rem;
             color: var(--accent);
-            background: rgba(59,130,246,0.06);
+            background: rgba(var(--accent-rgb),0.06);
             cursor: pointer;
             transition: all 0.25s;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
         }
-        .photo-btn:hover { background: rgba(59,130,246,0.1); }
+        .photo-btn:hover { background: rgba(var(--accent-rgb),0.1); }
         .photo-btn-primary {
             color: #fff;
             border-color: transparent;
             background: linear-gradient(135deg, var(--accent), var(--accent2));
         }
-        .photo-btn-primary:hover { box-shadow: 0 4px 16px rgba(59,130,246,0.25); transform: translateY(-1px); }
+        .photo-btn-primary:hover { box-shadow: 0 4px 16px rgba(var(--accent-rgb),0.25); transform: translateY(-1px); }
         .photo-btn-success {
             color: #fff;
             border-color: transparent;
@@ -303,7 +310,7 @@
             transition: all 0.25s;
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(59,130,246,0.08);
+            border: 1px solid rgba(var(--accent-rgb),0.08);
         }
         .link-btn:hover {
             background: rgba(255,255,255,0.7);
@@ -316,7 +323,7 @@
         }
         .link-btn-primary:hover {
             color: #fff;
-            box-shadow: 0 4px 16px rgba(59,130,246,0.2);
+            box-shadow: 0 4px 16px rgba(var(--accent-rgb),0.2);
             transform: translateY(-1px);
         }
 
@@ -358,9 +365,79 @@
             .photo-btn { padding: 9px 18px; font-size: 0.82rem; }
             .link-btn { padding: 9px 20px; }
         }
+
+        /* ===== 暗色主题 ===== */
+        body.dark {
+            --accent-rgb: 180, 180, 200;
+            --accent: #b4b4c8;
+            --bg: #080808;
+            --glass: rgba(25, 25, 35, 0.7);
+            --glass-border: rgba(180, 180, 200, 0.15);
+            --glass-hover: rgba(180, 180, 200, 0.06);
+            --accent-soft: rgba(180, 180, 200, 0.1);
+            --accent-glow: rgba(180, 180, 200, 0.12);
+            --text: #f0f0f5;
+            --text-muted: #b0b0c0;
+            --text-secondary: #9090a0;
+            --switch-bg: rgba(30, 30, 40, 0.8);
+            --switch-border: rgba(255,255,255,0.12);
+            --switch-shadow: rgba(0,0,0,0.4);
+            --grad-end-light: #d0d0dc;
+            --grad-end-dark: #a0a0b4;
+            background: #080808;
+        }
+        body.dark [class*="card"], body.dark [class*="popup"], body.dark [class*="modal"],
+        body.dark [class*="overlay"], body.dark [class*="wrap"], body.dark [class*="panel"] {
+            background-color: rgba(25, 25, 35, 0.75) !important; }
+        body.dark input, body.dark textarea { color: #f0f0f5 !important; }
+        body.dark ::placeholder { color: #707080 !important; }
+        body.dark small, body.dark [class*="muted"], body.dark [class*="hint"] { color: #a0a0b0 !important; }
+
+        /* 主题切换按钮 */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; z-index: 100001;
+            display: flex; align-items: center; gap: 8px;
+            background: var(--switch-bg);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--switch-border);
+            box-shadow: 0 2px 12px var(--switch-shadow);
+            border-radius: 28px; padding: 4px 6px 4px 14px;
+            cursor: pointer; user-select: none; -webkit-user-select: none;
+            transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+        }
+        .theme-toggle:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.1); }
+        .theme-toggle .theme-label {
+            font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap;
+            transition: color 0.35s ease; pointer-events: none;
+        }
+        .theme-toggle .theme-knob-wrapper {
+            width: 48px; height: 26px; border-radius: 13px;
+            background: #e2e8f0; position: relative; flex-shrink: 0;
+            transition: background 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body.dark .theme-toggle .theme-knob-wrapper { background: #334155; }
+        .theme-toggle .theme-knob {
+            position: absolute; top: 3px; left: 3px; width: 20px; height: 20px;
+            border-radius: 50%; background: #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body.dark .theme-toggle .theme-knob { transform: translateX(22px); }
+        .theme-toggle .theme-icon {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            font-size: 12px; line-height: 1; transition: opacity 0.25s ease; pointer-events: none;
+        }
+        .theme-toggle .theme-icon.sun { left: 5px; opacity: 1; }
+        .theme-toggle .theme-icon.moon { right: 5px; opacity: 0.3; }
+        body.dark .theme-toggle .theme-icon.sun { opacity: 0.3; }
+        body.dark .theme-toggle .theme-icon.moon { opacity: 1; }
     </style>
 </head>
 <body>
+    <div class="theme-toggle" id="themeToggle" title="切换主题">
+        <span class="theme-label" id="themeLabel">浅色</span>
+        <div class="theme-knob-wrapper"><span class="theme-icon sun">☀️</span><span class="theme-icon moon">🌙</span><div class="theme-knob"></div></div>
+    </div>
     <main class="page">
         <header class="photo-header">
             <h1>拍照<span>留念</span></h1>
@@ -622,6 +699,23 @@
             loadPhotoTimeline();
             startCamera();
         })();
+
+        (function(){
+            var s=localStorage.getItem("theme");
+            if(s==="dark"){document.body.classList.add("dark");createStars()}
+            document.getElementById("themeLabel").textContent=s==="dark"?"深色":"浅色";
+        })();
+        document.getElementById("themeToggle").addEventListener("click",function(){
+            document.body.classList.toggle("dark");
+            var d=document.body.classList.contains("dark");
+            localStorage.setItem("theme",d?"dark":"light");
+            document.getElementById("themeLabel").textContent=d?"深色":"浅色";
+            if(d)createStars();else removeStars();
+        });
+        var sc=null;
+        function createStars(){if(sc)return;sc=document.createElement("div");sc.id="starContainer";sc.style.cssText="position:fixed;inset:0;z-index:0;pointer-events:none;";document.body.insertBefore(sc,document.body.firstChild);var f=document.createDocumentFragment();for(var i=0;i<120;i++){var st=document.createElement("div");var sz=Math.random()*2.5+1;st.style.cssText="position:absolute;width:"+sz+"px;height:"+sz+"px;background:#fff;border-radius:50%;left:"+Math.random()*100+"%;top:"+Math.random()*100+"%;opacity:"+(Math.random()*0.6+0.2)+";animation:starBlink "+(Math.random()*3+2)+"s ease-in-out "+(Math.random()*3)+"s infinite alternate;";f.appendChild(st)}sc.appendChild(f)}
+        function removeStars(){if(sc){sc.remove();sc=null}}
+        (function(){var s=document.createElement("style");s.textContent="@keyframes starBlink{0%{opacity:0.2;transform:scale(1)}100%{opacity:1;transform:scale(1.5)}}";document.head.appendChild(s)})();
     </script>
 </body>
 </html>
