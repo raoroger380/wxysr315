@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
@@ -460,19 +460,38 @@
             font-weight: 200; margin: 0 2px;
             padding-bottom: 18px;
         }
-        .cd-sub {
-            font-size: 0.85rem; color: var(--text-secondary);
-            letter-spacing: 1px; font-weight: 300;
+        @keyframes slideUpIn { 0% { transform: translateY(100%); opacity: 0.4; } 100% { transform: translateY(0); opacity: 1; } }
+        .cd-realage {
+            margin-top: 16px;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+            font-weight: 300;
         }
-        .cd-birthday {
-            display: none;
-            font-size: clamp(1.6rem, 5vw, 2.4rem);
+        .cd-realage .age-num {
+            font-size: 1.6rem;
+            font-weight: 600;
             color: var(--accent);
-            letter-spacing: 3px;
-            font-weight: 400;
-            margin-top: 12px;
-            animation: cdFadeIn 0.6s ease;
+            text-shadow: 0 0 20px rgba(59,130,246,0.2);
+            font-variant-numeric: tabular-nums;
+            display: inline-block;
         }
+        .cd-realage .digit-cell {
+            display: inline-block;
+            height: 1.6rem;
+            overflow: hidden;
+            position: relative;
+            vertical-align: top;
+            min-width: 0.55em;
+            text-align: center;
+            line-height: 1.6rem;
+        }
+        .cd-realage .digit-item {
+            display: inline-block;
+            height: 1.6rem;
+            line-height: 1.6rem;
+        }
+
         .cd-entry {
             position: fixed; left: 16px; bottom: 16px;
             font-size: 0.78rem; color: var(--text-secondary);
@@ -622,7 +641,11 @@
             border-color: rgba(59,130,246,0.3);
         }
 
-    </style>
+    
+
+
+
+</style>
 </head>
 <body>
     <div id="countdownOverlay">
@@ -650,8 +673,7 @@
                     <small>秒</small>
                 </div>
             </div>
-            <div class="cd-sub" id="cdSub">2026年3月15日 · 15岁生日</div>
-            <div class="cd-birthday" id="cdBirthday">🎂 生日快乐！🎉</div>
+            <div class="cd-realage" id="cdRealAge"></div>
         </div>
         <div style="text-align:center;margin-top:16px;">
             <button class="msg-btn-index" id="msgBtn">💬 留言</button>
@@ -739,7 +761,7 @@
             let ambientLightElements = [];
             const photoParticleImage = new Image();
             photoParticleImage.decoding = "async";
-            photoParticleImage.src = "data:image/jpeg;base64,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";
+            photoParticleImage.src = "data:image/jpeg;base64,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";
             let photoParticleLoad;
 
             function getParticleCount() {
@@ -896,8 +918,88 @@
                 vx: -0.1 + Math.random() * 0.2, vy: -0.08 + Math.random() * 0.16,
                 r: 0.6 + Math.random() * 1.2, a: 0.06 + Math.random() * 0.1
             }));
+            let heartPhase = 0;
+
+            function drawGrainyHeart(ctx) {
+                const cx = w / 2;
+                const cy = h / 2;
+                const baseSize = Math.min(w, h) * 0.45;
+                const beat = 1 + Math.sin(heartPhase) * 0.07;
+                const size = baseSize * beat;
+
+                ctx.save();
+                ctx.translate(cx, cy);
+
+                ctx.shadowColor = 'rgba(255, 60, 100, 0.15)';
+                ctx.shadowBlur = 50;
+
+                ctx.beginPath();
+                const s = size / 100;
+                const step = 0.015;
+                for (let t = 0; t <= Math.PI * 2; t += step) {
+                    const x = 16 * Math.pow(Math.sin(t), 3) * s;
+                    const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * s;
+                    if (t === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+
+                ctx.clip();
+
+                const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, size);
+                grad.addColorStop(0, 'rgba(255, 80, 130, 0.20)');
+                grad.addColorStop(0.4, 'rgba(230, 40, 90, 0.12)');
+                grad.addColorStop(1, 'rgba(200, 20, 60, 0.05)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(-size, -size, size * 2, size * 2);
+
+                const grainCount = Math.floor(size * 2.5);
+                for (let i = 0; i < grainCount; i++) {
+                    const gx = (Math.random() - 0.5) * size * 2.2;
+                    const gy = (Math.random() - 0.5) * size * 2.2;
+                    if (Math.abs(gx) > size * 0.9 || Math.abs(gy) > size * 0.9) continue;
+                    const gr = 0.3 + Math.random() * 1.8;
+                    const bright = 0.1 + Math.random() * 0.3;
+                    ctx.fillStyle = 'rgba(255, 200, 220, ' + (bright * 0.3) + ')';
+                    ctx.beginPath();
+                    ctx.arc(gx, gy, gr, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                for (let i = 0; i < grainCount * 0.4; i++) {
+                    const gx = (Math.random() - 0.5) * size * 2.2;
+                    const gy = (Math.random() - 0.5) * size * 2.2;
+                    if (Math.abs(gx) > size * 0.9 || Math.abs(gy) > size * 0.9) continue;
+                    const gr = 0.4 + Math.random() * 1.2;
+                    ctx.fillStyle = 'rgba(120, 20, 50, ' + (0.05 + Math.random() * 0.1) + ')';
+                    ctx.beginPath();
+                    ctx.arc(gx, gy, gr, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.restore();
+
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.beginPath();
+                for (let t = 0; t <= Math.PI * 2; t += step) {
+                    const x = 16 * Math.pow(Math.sin(t), 3) * s;
+                    const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * s;
+                    if (t === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.strokeStyle = 'rgba(255, 80, 120, 0.10)';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                ctx.restore();
+
+                heartPhase += 0.035;
+            }
+
             function renderBg() {
                 bgCtx.clearRect(0, 0, w, h);
+                if (textFx.dataset.particleMode === "photo") drawGrainyHeart(bgCtx);
                 for (const p of bgParticles) {
                     p.x += p.vx; p.y += p.vy;
                     if (p.x < -10) p.x = w + 10; if (p.x > w + 10) p.x = -10;
@@ -963,40 +1065,47 @@
 
             async function getPhotoParticlePoints() {
                 const image = await loadPhotoParticleImage();
-                const crop = { left: 0.02, top: 0.04, right: 0.98, bottom: 0.98 };
+                // 裁去上方大面积夜景，让两个人的脸占据大部分粒子画面。
+                const crop = { left: 0.02, top: 0.14, right: 0.98, bottom: 1 };
                 const imageRatio = (image.naturalWidth * (crop.right - crop.left)) /
                     (image.naturalHeight * (crop.bottom - crop.top));
                 let displayWidth = Math.min(w * 0.94, h * imageRatio * 0.88);
                 let displayHeight = displayWidth / imageRatio;
-                if (displayHeight > h * 0.88) {
-                    displayHeight = h * 0.88;
+                const maxHeight = h * 0.88;
+                if (displayHeight > maxHeight) {
+                    displayHeight = maxHeight;
                     displayWidth = displayHeight * imageRatio;
                 }
+
                 const sampleCanvas = document.createElement("canvas");
                 const sampleWidth = Math.min(960, Math.round(displayWidth * dpr));
-                const sampleHeight = Math.round(sampleWidth / (image.naturalWidth / image.naturalHeight));
+                const sampleHeight = Math.round(sampleWidth / imageRatio);
                 sampleCanvas.width = sampleWidth;
                 sampleCanvas.height = sampleHeight;
                 const sampleCtx = sampleCanvas.getContext("2d", { willReadFrequently: true });
                 sampleCtx.drawImage(image, 0, 0, sampleWidth, sampleHeight);
                 const pixels = sampleCtx.getImageData(0, 0, sampleWidth, sampleHeight).data;
+                const left = (w - displayWidth) / 2;
+                const top = (h - displayHeight) / 2;
                 const cropLeft = Math.floor(sampleWidth * crop.left);
                 const cropTop = Math.floor(sampleHeight * crop.top);
                 const cropRight = Math.ceil(sampleWidth * crop.right);
                 const cropBottom = Math.ceil(sampleHeight * crop.bottom);
                 const cropWidth = cropRight - cropLeft;
                 const cropHeight = cropBottom - cropTop;
+                // 使用规则网格取样，确保脸部和衣服不会被随机抽样留下空洞。
                 const step = Math.max(3, Math.round(Math.sqrt((cropWidth * cropHeight) / dots.length)));
-                const left = (w - displayWidth) / 2;
-                const top = (h - displayHeight) / 2;
                 const pts = [];
+
                 for (let y = cropTop; y < cropBottom; y += step) {
                     for (let x = cropLeft; x < cropRight; x += step) {
                         const index = (y * sampleWidth + x) * 4;
+                        const alpha = pixels[index + 3];
+                        if (alpha < 80) continue;
                         pts.push({
                             x: left + ((x - cropLeft) / cropWidth) * displayWidth,
                             y: top + ((y - cropTop) / cropHeight) * displayHeight,
-                            color: `rgba(${pixels[index]}, ${pixels[index + 1]}, ${pixels[index + 2]}, ${pixels[index + 3] / 255})`
+                            color: `rgba(${pixels[index]}, ${pixels[index + 1]}, ${pixels[index + 2]}, ${alpha / 255})`
                         });
                     }
                 }
@@ -1073,93 +1182,97 @@
                 }
                 return { pts: bestPts, size: bestSize };
             }
-            // ---- F1标志粒子形状 (Canvas渲染) ----
-            function getF1TrackPoints(w, h, count) {
-                const scale = Math.min(w, h) / 140;
-                const cw = w * dpr, ch = h * dpr;
-                const cx = cw / 2, cy = ch / 2;
-
-                // 设置 off canvas 尺寸
-                off.width = cw;
-                off.height = ch;
-                offCtx.setTransform(1, 0, 0, 1, 0, 0);
-                offCtx.clearRect(0, 0, cw, ch);
-                offCtx.fillStyle = '#ffffff';
-
-                // ---- 绘制 "1" 形状（F1标志核心）----
-                const stemW = 11 * scale * dpr;
-                const stemH = 48 * scale * dpr;
-                const stemL = cx - stemW / 2;
-                const stemT = cy - stemH / 2;
-
-                // 竖体
-                offCtx.fillRect(stemL, stemT + 12 * scale * dpr, stemW, stemH - 12 * scale * dpr - 6 * scale * dpr);
-
-                // 顶部衬线（向左延伸）
-                const serifH = 12 * scale * dpr;
-                const serifW = 28 * scale * dpr;
-                offCtx.beginPath();
-                offCtx.moveTo(cx - serifW * 0.6, stemT);
-                offCtx.lineTo(cx + serifW * 0.4, stemT);
-                offCtx.lineTo(cx + serifW * 0.35, stemT + serifH);
-                offCtx.lineTo(cx - serifW * 0.55, stemT + serifH);
-                offCtx.closePath();
-                offCtx.fill();
-
-                // 底部衬线
-                const footH = 6 * scale * dpr;
-                const footW = 16 * scale * dpr;
-                offCtx.fillRect(cx - footW * 0.55, stemT + stemH - footH, footW, footH);
-
-                // ---- 绘制右侧斜条纹 ----
-                offCtx.save();
-                const stripeCount = 6;
-                const stripeW = 3.5 * scale * dpr;
-                const stripeGap = 3 * scale * dpr;
-                const stripeBaseX = cx + stemW * 0.55;
-                const stripeLen = 44 * scale * dpr;
-                for (let i = 0; i < stripeCount; i++) {
-                    const topX = stripeBaseX + i * (stripeW + stripeGap);
-                    offCtx.translate(topX, cy - stripeLen / 2);
-                    offCtx.rotate(0.26); // 15度
-                    offCtx.fillRect(0, 0, stripeW, stripeLen);
-                    offCtx.setTransform(1, 0, 0, 1, 0, 0);
-                }
-                offCtx.restore();
-
-                // ---- 采集像素点 ----
-                const allPts = [];
-                const step = Math.max(1, Math.floor(Math.min(w, h) / 200)) * dpr;
-                const img = offCtx.getImageData(0, 0, cw, ch).data;
-                for (let y = 0; y < ch; y += step) {
-                    for (let x = 0; x < cw; x += step) {
-                        if (img[(y * cw + x) * 4 + 3] > 140) {
-                            allPts.push({x: x / dpr, y: y / dpr});
-                        }
-                    }
-                }
-
-                // 选出 count 个点
+            // ---- 足球场粒子形状 ----
+            function getFootballFieldPoints(w, h, count) {
                 const pts = [];
-                if (allPts.length >= count) {
-                    // 均匀采样
-                    for (let i = 0; i < count; i++) {
-                        const idx = Math.floor(i * allPts.length / count);
-                        pts.push(allPts[idx]);
-                    }
-                } else if (allPts.length > 0) {
-                    // 循环复制
-                    for (let i = 0; i < count; i++) {
-                        pts.push(allPts[i % allPts.length]);
-                    }
-                } else {
-                    // fallback: 随机
-                    for (let i = 0; i < count; i++) {
-                        pts.push({x: Math.random() * w, y: Math.random() * h});
+                const ratio = 1.54;
+                let fw, fh;
+                if (w / h > ratio) { fh = h; fw = fh * ratio; }
+                else { fw = w; fh = fw / ratio; }
+                const lx = (w - fw) / 2, rx = lx + fw;
+                const ty = (h - fh) / 2, by = ty + fh;
+                const cx = w / 2, cy = h / 2;
+                const cr = fw * 0.10;
+
+                // 按比例分配粒子到各特征
+                const parts = [
+                    Math.floor(count * 0.30),
+                    Math.floor(count * 0.10),
+                    Math.floor(count * 0.15),
+                    Math.floor(count * 0.20),
+                    Math.floor(count * 0.10),
+                    Math.floor(count * 0.15),
+                ];
+                let total = parts.reduce((a,b)=>a+b,0);
+                parts[0] += count - total;
+
+                // 1. 外框
+                const pl = 2 * (fw + fh);
+                for (let i = 0; i < parts[0]; i++) {
+                    const t = i / parts[0];
+                    const d = t * pl;
+                    if (d < fw)           { pts.push({x: lx+d, y: ty}); }
+                    else if (d < fw+fh)   { pts.push({x: rx, y: ty+(d-fw)}); }
+                    else if (d < 2*fw+fh) { pts.push({x: rx-(d-fw-fh), y: by}); }
+                    else                  { pts.push({x: lx, y: by-(d-2*fw-fh)}); }
+                }
+
+                // 2. 中场线
+                for (let i = 0; i < parts[1]; i++) {
+                    const t = i / parts[1];
+                    pts.push({x: lx + t*fw, y: cy});
+                }
+
+                // 3. 中圈
+                for (let i = 0; i < parts[2]; i++) {
+                    const a = (i / parts[2]) * 2 * Math.PI;
+                    pts.push({x: cx + Math.cos(a)*cr, y: cy + Math.sin(a)*cr});
+                }
+
+                // 4. 禁区 (左右各半)
+                const pw = fw * 0.22, ph = fh * 0.44;
+                const ptop = cy - ph/2, pbot = cy + ph/2;
+                for (let side = 0; side < 2; side++) {
+                    const n = Math.floor(parts[3] / 2);
+                    const baseX = side === 0 ? lx : rx - pw;
+                    for (let i = 0; i < n; i++) {
+                        const t = i / n;
+                        const d = t * 2 * (pw + ph);
+                        if (d < pw)           { pts.push({x: baseX+d, y: ptop}); }
+                        else if (d < pw+ph)   { pts.push({x: baseX+pw, y: ptop+(d-pw)}); }
+                        else if (d < 2*pw+ph) { pts.push({x: baseX+pw-(d-pw-ph), y: pbot}); }
+                        else                  { pts.push({x: baseX, y: pbot-(d-2*pw-ph)}); }
                     }
                 }
 
-                // 打乱顺序
+                // 5. 小禁区 (左右各半)
+                const gw = fw * 0.08, gh = fh * 0.22;
+                const gtop = cy - gh/2, gbot = cy + gh/2;
+                for (let side = 0; side < 2; side++) {
+                    const n = Math.floor(parts[4] / 2);
+                    const baseX = side === 0 ? lx : rx - gw;
+                    for (let i = 0; i < n; i++) {
+                        const t = i / n;
+                        const d = t * 2 * (gw + gh);
+                        if (d < gw)           { pts.push({x: baseX+d, y: gtop}); }
+                        else if (d < gw+gh)   { pts.push({x: baseX+gw, y: gtop+(d-gw)}); }
+                        else if (d < 2*gw+gh) { pts.push({x: baseX+gw-(d-gw-gh), y: gbot}); }
+                        else                  { pts.push({x: baseX, y: gbot-(d-2*gw-gh)}); }
+                    }
+                }
+
+                // 6. 禁区弧 (左右各半圆)
+                const arcR = fw * 0.08;
+                for (let side = 0; side < 2; side++) {
+                    const n = Math.floor(parts[5] / 2);
+                    const arcCx = side === 0 ? lx + pw : rx - pw;
+                    for (let i = 0; i < n; i++) {
+                        const a = Math.PI * (side === 0 ? -0.5 : 0.5) + (i / n) * Math.PI;
+                        pts.push({x: arcCx + Math.cos(a)*arcR, y: cy + Math.sin(a)*arcR});
+                    }
+                }
+
+                // 打乱顺序让过渡更自然
                 for (let i = pts.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [pts[i], pts[j]] = [pts[j], pts[i]];
@@ -1170,7 +1283,7 @@
                 return new Promise(resolve => {
                     dots.forEach(dot => { dot.color = null; dot.radius = 1.8; });
                     if (scatter) {
-                        const targets = null; // 随机散开
+                        const targets = scatter === 'football' ? getFootballFieldPoints(w, h, dots.length) : null;
                         for (let i = 0; i < dots.length; i++) {
                             if (targets) { dots[i].tx = targets[i].x; dots[i].ty = targets[i].y; }
                             else { dots[i].tx = Math.random()*w; dots[i].ty = Math.random()*h; }
@@ -1196,10 +1309,11 @@
                         } else { selected = dots.map(d=>({x:d.tx, y:d.ty})); }
                         for (let i=0;i<dots.length;i++) { dots[i].tx = selected[i].x; dots[i].ty = selected[i].y; }
                         setTimeout(resolve, 2200);
-                    }, scatter ? 1200 : 100);
+                    }, scatter === 'football' ? 2500 : scatter ? 900 : 100);
                 });
             }
             async function morphToPhoto() {
+                // 仅在肖像阶段增加粒子，避免前面的文字与足球场卡顿。
                 expandDotsForPhoto();
                 let pts = [];
                 try {
@@ -1212,6 +1326,8 @@
                     await morphTo("Happy Birthday", 180, true);
                     return;
                 }
+
+                // 先短暂散开，再聚成照片中的两个人。
                 textFx.dataset.particleMode = "photo";
                 dots.forEach(dot => {
                     dot.color = null;
@@ -1219,8 +1335,10 @@
                     dot.tx = Math.random() * w;
                     dot.ty = Math.random() * h;
                 });
-                await sleep(500);
+                await sleep(650);
+
                 for (let i = 0; i < dots.length; i++) {
+                    // 均匀地从规则网格中取点，而不是随机漏掉某些区域。
                     const point = pts[Math.floor((i / dots.length) * pts.length)];
                     dots[i].tx = point.x;
                     dots[i].ty = point.y;
@@ -1569,7 +1687,7 @@
                 await loadDanmakuMessages();
                 startDanmaku();
                 await morphTo("嗨，朋友", 220, false);
-                await morphTo(`${friendName}，生日快乐`, 180, true);
+                await morphTo(`${friendName}，生日快乐`, 180, `football`);
                 await morphToPhoto();
                 await morphToLine();
                 stopDanmaku();
@@ -1588,8 +1706,10 @@
             function getNextBirthday() {
                 const now = new Date();
                 const year = now.getFullYear();
-                let bd = new Date(year, BIRTH_MONTH, BIRTH_DAY, 0, 0, 0);
-                if (now >= bd) bd = new Date(year + 1, BIRTH_MONTH, BIRTH_DAY, 0, 0, 0);
+                let bd = new Date(year, BIRTH_MONTH, BIRTH_DAY);
+                // 只比较年月日，忽略具体时间，否则生日当天 currentTime >= 00:00:00 永远为 true
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                if (today > bd) bd = new Date(year + 1, BIRTH_MONTH, BIRTH_DAY);
                 return bd;
             }
 
@@ -1597,9 +1717,7 @@
             const cdHours = document.getElementById('cdHours');
             const cdMins = document.getElementById('cdMins');
             const cdSecs = document.getElementById('cdSecs');
-            const cdBirthday = document.getElementById('cdBirthday');
             const cdNumbers = document.querySelector('.cd-numbers');
-            const cdSub = document.getElementById('cdSub');
             let countdownTimer = null;
             let entered = false;
 
@@ -1609,26 +1727,27 @@
                 document.getElementById('countdownOverlay').classList.add('hidden');
                 setTimeout(run, 900);
             }
+            // 本地预览可在地址末尾加 ?preview=1，跳过倒计时和密码入口。
+            if (new URLSearchParams(window.location.search).has('preview')) {
+                setTimeout(enterCelebration, 50);
+            }
 
             function updateCountdown() {
                 const now = Date.now();
                 const birthday = getNextBirthday();
                 const age = birthday.getFullYear() - BIRTH_YEAR;
-                cdSub.textContent = `${birthday.getFullYear()}年3月15日 · ${age}岁生日`;
 
                 const diff = birthday - now;
                 if (diff <= 0) {
                     if (!entered) {
                         cdNumbers.style.display = 'none';
-                        cdSub.style.display = 'none';
-                        cdBirthday.style.display = 'block';
-                        document.querySelector('.cd-label').textContent = '今天';
-                        document.getElementById('cdEntry').textContent = '✨ 点击进入 ✨';
+                        document.querySelector('.cd-label').textContent = '今天就是生日';
+                        var cdEntry = document.getElementById('cdEntry'); cdEntry.textContent = '🎉 进入'; cdEntry.className = 'msg-btn-index'; cdEntry.style.position = 'static'; cdEntry.style.display = 'inline-block'; var btnContainer2 = document.querySelector('#countdownOverlay > div:nth-child(2)'); if(btnContainer2) { btnContainer2.style.display = 'flex'; btnContainer2.style.justifyContent = 'center'; btnContainer2.style.gap = '12px'; btnContainer2.appendChild(cdEntry); }
                         if (countdownTimer) {
                             clearInterval(countdownTimer);
                             countdownTimer = null;
                         }
-                        setTimeout(enterCelebration, 3000);
+                        
                     }
                     return;
                 }
@@ -1644,6 +1763,60 @@
             }
             updateCountdown();
             countdownTimer = setInterval(updateCountdown, 1000);
+
+            // ---- 实时年龄 ----
+            const cdRealAge = document.getElementById('cdRealAge');
+            const BIRTH_MS = new Date(BIRTH_YEAR, BIRTH_MONTH, BIRTH_DAY).getTime();
+            const MS_PER_YEAR = 365.2425 * 864e5;
+            function updateRealAge() {
+                const age = (Date.now() - BIRTH_MS) / MS_PER_YEAR;
+                const ageStr = age.toFixed(7);
+                const el = cdRealAge.querySelector('.age-num');
+                if (!el) {
+                    cdRealAge.innerHTML = '你现在 <span class="age-num"></span> 岁';
+                    const ne = cdRealAge.querySelector('.age-num');
+                    buildDigits(ne, ageStr, '');
+                    return;
+                }
+                const oldDigits = [];
+                const cells = el.querySelectorAll('.digit-cell');
+                cells.forEach(function(cell) {
+                    var items = cell.querySelectorAll('.digit-item');
+                    if (items.length > 0) oldDigits.push(items[items.length - 1].textContent);
+                });
+                var oldStr = oldDigits.join('');
+                if (oldStr === ageStr) return;
+                buildDigits(el, ageStr, oldStr);
+            }
+            function buildDigits(container, newStr, oldStr) {
+                container.innerHTML = '';
+                for (var i = 0; i < newStr.length; i++) {
+                    var ch = newStr[i];
+                    var oldCh = i < oldStr.length ? oldStr[i] : '';
+                    var cell = document.createElement('span');
+                    cell.className = 'digit-cell';
+                    var span = document.createElement('span');
+                    span.className = 'digit-item';
+                    span.textContent = ch;
+                    cell.appendChild(span);
+                    container.appendChild(cell);
+                    if (oldCh !== '' && oldCh !== ch) {
+                        span.style.transform = 'translateY(100%)';
+                        span.style.opacity = '0.4';
+                        (function(s) {
+                            requestAnimationFrame(function() {
+                                requestAnimationFrame(function() {
+                                    s.style.transition = 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease';
+                                    s.style.transform = 'translateY(0)';
+                                    s.style.opacity = '1';
+                                });
+                            });
+                        })(span);
+                    }
+                }
+            }
+            updateRealAge();
+            setInterval(updateRealAge, 100);
 
             // ---- Crypto helper (XOR + Base64) ----
             function xorDecrypt(b64, key) {
@@ -1791,3 +1964,5 @@
     </script>
 </body>
 </html>
+
+
